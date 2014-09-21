@@ -2,6 +2,7 @@ Simple DSL to build complex queries in Solr
 
 Examples:
 
+```java
 SQB.newQuery("iphone").build(); 
 //"q=iphone" 
 
@@ -33,6 +34,8 @@ SQB.newQuery("iphone")
 					.facetByQuery("teste")
 					.build();
 //"q=iphone&fq=name:teste&sort=popularity&facet=true&fl=id,name&facet.query=teste&facet.field=category"
+
+```
 
 
 Interfaces
