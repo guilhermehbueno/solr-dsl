@@ -1,0 +1,11 @@
+package br.com.search.rules 
+
+import com.solr.dsl.SolrQueryBuilder 
+expander search.dsl 
+
+rule "Imprimir Query_541dd396549c41a04bfd377c" 
+    when 
+        Quando o termo buscado for Iphone
+    then 
+        Imprimir a query
+end 

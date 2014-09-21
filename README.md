@@ -1,25 +1,41 @@
 Simple DSL to build complex queries in Solr
 
-
 Examples:
 
-SolrQueryDsl dsl = QueryBuilder.newQuery();
+SolrQueryBuilder.newQuery("iphone").build(); 
+//"q=iphone" 
 
-dsl.setQuery("iphone");
+SolrQueryBuilder.newQuery("iphone").filterBy("name:teste").build(); 
+//"q=iphone&fq=name:teste"
 
-SolrQuery solrQuery = dsl.build(); //Return: ?q=iphone
+SolrQueryBuilder.newQuery("iphone").filterBy("name:teste").filterBy("category:categoryName").build(); 
+//"q=iphone&fq=name:teste&fq=category:categoryName"
 
+SolrQueryBuilder.newQuery("iphone").filterBy("name:teste").sortBy("popularity").build(); 
+//"q=iphone&fq=name:teste&sort=popularity"
 
+SolrQueryBuilder.newQuery("iphone").filterBy("name:teste").sortBy("popularity").and().listBy("id,name").build(); 
+//"q=iphone&fq=name:teste&sort=popularity&fl=id,name"
 
-SolrQuery solrQuery = QueryBuilder.newQuery("sony vaio").filterBy(field("brandName").withValue("sony")).and().sortBy(field("popularity")).build();
+SolrQueryBuilder.newQuery("iphone")
+					.filterBy("name:teste")
+					.sortBy("popularity").and()
+					.listBy("id,name").and()
+					.facetByField("category")
+					.build(); 
+//"q=iphone&fq=name:teste&sort=popularity&facet=true&fl=id,name&facet.field=category"
 
-
-SQB.newQuery("car").filterBy("brandName:sony").sortBy("popularity");
-
+SolrQueryBuilder.newQuery("iphone")
+					.filterBy("name:teste")
+					.sortBy("popularity").and()
+					.listBy("id,name").and()
+					.facetByField("category")
+					.facetByQuery("teste")
+					.build();
+//"q=iphone&fq=name:teste&sort=popularity&facet=true&fl=id,name&facet.query=teste&facet.field=category"
 
 
 Interfaces
-
 
 FirstCommandAggregation || SecondCommandAggregation    || ThirdCommandAggregation
 QueryCommandAggregation || ConfigureCommandAggregation || FacetCommandAggregation
