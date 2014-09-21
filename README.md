@@ -13,8 +13,8 @@ SQB.newQuery("iphone")
 //"q=iphone&fq=name:teste"
 
 SQB.newQuery("iphone")
-					.filterBy("name:teste").
-					filterBy("category:categoryName")
+					.filterBy("name:teste")
+					.filterBy("category:categoryName")
 					.build(); 
 //"q=iphone&fq=name:teste&fq=category:categoryName"
 
