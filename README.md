@@ -3,6 +3,12 @@ Simple DSL to build complex queries in Solr
 Examples:
 
 ```java
+/**Handling raw queries*/
+SBQ.fromRawQuery("q=iphone").info().getQuery(); //iphone
+SBQ.fromRawQuery("q=iphone").info().getQuery(); //iphone
+
+
+
 SQB.newQuery("iphone")
 	.build(); 
 //"q=iphone" 
