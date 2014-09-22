@@ -26,7 +26,7 @@ public class RulerTest {
 		
 		RulesExecutor6 rulesExecutor6 = new RulesExecutor6(dsl, dslr);
 		FirstCommandAggregation queryBuilder = SolrQueryBuilder.newQuery("Iphone");
-		Assert.assertEquals(queryBuilder.getQuery(), "q=Iphone");
+		Assert.assertEquals(queryBuilder.info().getQuery(), "q=Iphone");
 		rulesExecutor6.execute(queryBuilder);
 		System.out.println("Resultado:"+queryBuilder.build());
 	}
@@ -41,7 +41,7 @@ public class RulerTest {
 		
 		RulesExecutor6 rulesExecutor6 = new RulesExecutor6(dsl, dslr);
 		FirstCommandAggregation queryBuilder = SolrQueryBuilder.newQuery("Iphone");
-		Assert.assertEquals(queryBuilder.getQuery(), "q=Iphone");
+		Assert.assertEquals(queryBuilder.info().getQuery(), "q=Iphone");
 		rulesExecutor6.execute(queryBuilder);
 		System.out.println("Resultado:"+queryBuilder.build());
 	}

@@ -7,6 +7,7 @@ import com.solr.dsl.views.FirstCommandAggregation;
 import com.solr.dsl.views.SecondCommandAggregation;
 import com.solr.dsl.views.ThirdCommandAggregation;
 import com.solr.dsl.views.build.BuilderToString;
+import com.solr.dsl.views.info.QueryInfo;
 
 public class QueryConfigureCommand implements SecondCommandAggregation, ThirdCommandAggregation{
 	
@@ -34,6 +35,10 @@ public class QueryConfigureCommand implements SecondCommandAggregation, ThirdCom
 
 	public ThirdCommandAggregation and() {
 		return this;
+	}
+	
+	public QueryInfo info() {
+		return goToInit().info();
 	}
 
 	public ThirdCommandAggregation facetByField(String command) {
@@ -103,7 +108,6 @@ public class QueryConfigureCommand implements SecondCommandAggregation, ThirdCom
 		
 		public String build() {
 			StringBuilder sb = new StringBuilder();
-			//sb.append(this.primarySolrQuery.build());
 			if(this.enabledFacet){
 				sb.append("&").append("facet=true");
 			}
