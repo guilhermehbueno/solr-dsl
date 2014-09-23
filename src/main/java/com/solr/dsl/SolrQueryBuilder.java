@@ -44,6 +44,11 @@ public class SolrQueryBuilder implements FirstCommandAggregation{
 		}
 		return new SolrQueryBuilder("q="+query);
 	}
+	
+	public FirstCommandAggregation boostBy(String command) {
+		this.primarySolrQuery.addBoostQuery("bq="+command);
+		return this;
+	}
 
 	public FirstCommandAggregation filterBy(String command) {
 		this.primarySolrQuery.addFilter("fq="+command);
@@ -76,8 +81,17 @@ public class SolrQueryBuilder implements FirstCommandAggregation{
 		
 		private String query;
 		private final List<String> filters = new ArrayList<String>();
+		private final List<String> boostQuery = new ArrayList<String>();
 		private String sortBy;
 		
+		public boolean addBoostQuery(String e) {
+			return boostQuery.add(e);
+		}
+
+		public boolean addAllBoostQuery(Collection<? extends String> c) {
+			return boostQuery.addAll(c);
+		}
+
 		public boolean addFilter(String fq) {
 			return filters.add(fq);
 		}
@@ -104,11 +118,16 @@ public class SolrQueryBuilder implements FirstCommandAggregation{
 		
 		public String build() {
 			String fqs = StringUtils.join(this.filters, "&");
+			String bqs = StringUtils.join(this.boostQuery, "&");
 			StringBuilder sb = new StringBuilder();
 			
 			sb.append(query);
 			if(StringUtils.isNotEmpty(fqs)){
 				sb.append("&").append(fqs);
+			}
+			
+			if(StringUtils.isNotEmpty(bqs)){
+				sb.append("&").append(bqs);
 			}
 			
 			if(StringUtils.isNotEmpty(sortBy)){
