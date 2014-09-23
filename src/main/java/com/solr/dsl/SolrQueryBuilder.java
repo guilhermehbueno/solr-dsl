@@ -10,8 +10,9 @@ import com.solr.dsl.QueryConfigureCommand.SecondSolrQuery;
 import com.solr.dsl.views.FirstCommandAggregation;
 import com.solr.dsl.views.SecondCommandAggregation;
 import com.solr.dsl.views.build.BuilderToString;
+import com.solr.dsl.views.info.QueryInfo;
 
-public class SolrQueryBuilder implements FirstCommandAggregation{
+public class SolrQueryBuilder implements FirstCommandAggregation, QueryInfo{
 	
 	private final PrimarySolrQuery primarySolrQuery = new PrimarySolrQuery();
 	private final SecondSolrQuery secondSolrQuery;
@@ -34,8 +35,40 @@ public class SolrQueryBuilder implements FirstCommandAggregation{
 		return primarySolrQuery;
 	}
 	
+	public QueryInfo info(){
+		return this;
+	}
+	
+	public String getFacetQueries() {
+		return this.secondSolrQuery.getFacetByQuery();
+	}
+
+	public String getFacetFields() {
+		return this.secondSolrQuery.getFacetByField();
+	}
+
+	public String getFacetPrefixes() {
+		return this.secondSolrQuery.getFacetByPrefix();
+	}
+	
+	public String getFieldList() {
+		return this.secondSolrQuery.getListBy();
+	}
+	
+	public List<String> getFilterQueries() {
+		return this.primarySolrQuery.getFilters();
+	}
+	
 	public String getQuery() {
 		return this.primarySolrQuery.getQuery();
+	}
+	
+	public String getSortBy() {
+		return this.primarySolrQuery.getSortBy();
+	}
+	
+	public static FirstCommandAggregation fromRawQuery(String rawQuery){
+		return null;
 	}
 
 	public static FirstCommandAggregation newQuery(String query){
