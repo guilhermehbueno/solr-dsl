@@ -9,37 +9,37 @@ public class SolrQueryBuilderByRawQueryTest {
 	@DataProvider(name="queries")
 	public Object[][] queriesProvider(){
 		return new Object[][] {
-			{new QueryBean("iphone", SolrQueryBuilder.newQuery("iphone").info().getQuery())},
+			{new QueryBean("q=iphone", SolrQueryBuilder.newQuery("iphone").info().getQuery())},
 			{new QueryBean("2", SolrQueryBuilder.newQuery("iphone").filterBy("name:teste").filterBy("category:categoryName").info().getFilterQueries().size()+"")},
-			{new QueryBean("popularity", SolrQueryBuilder.newQuery("iphone").filterBy("name:teste").sortBy("popularity").info().getSortBy())},
-			{new QueryBean("id,name", SolrQueryBuilder.newQuery("iphone").filterBy("name:teste").sortBy("popularity").and().listBy("id,name").info().getFieldList())},
-			{new QueryBean("category", SolrQueryBuilder.newQuery("iphone")
+			{new QueryBean("sort=popularity", SolrQueryBuilder.newQuery("iphone").filterBy("name:teste").sortBy("popularity").info().getSortBy())},
+			{new QueryBean("fl=id,name", SolrQueryBuilder.newQuery("iphone").filterBy("name:teste").sortBy("popularity").and().listBy("id,name").info().getFieldList())},
+			{new QueryBean("facet.field=category", SolrQueryBuilder.newQuery("iphone")
 													.filterBy("name:teste").and().and()
 													.facetByField("category")
-													.build())},
-			{new QueryBean("teste", SolrQueryBuilder.newQuery("iphone")
+													.info().getFacetFields())},
+			{new QueryBean("facet.query=teste", SolrQueryBuilder.newQuery("iphone")
 													.sortBy("popularity").and()
 													.listBy("id,name").and()
 													.facetByQuery("teste")
-													.build())}
+													.info().getFacetQueries())}
 		};
 	}
 
 	@Test
 	public void shouldGetQueryFromRawQuery(){
-		Assert.assertEquals(SolrQueryBuilder.fromRawQuery("q=iphone&fq=name:teste").info().getQuery(), "iphone");
+		Assert.assertEquals(SolrQueryBuilder.fromRawQuery("q=iphone&fq=name:teste").info().getQuery(), "q=iphone");
 	}
 	
 	@Test
 	public void shouldGetFilterQueryFromRawQuery(){
-		Assert.assertEquals(SolrQueryBuilder.fromRawQuery("q=iphone&fq=name:teste&sort=popularity").info().getSortBy(), "popularity");
+		Assert.assertEquals(SolrQueryBuilder.fromRawQuery("q=iphone&fq=name:teste&sort=popularity").info().getSortBy(), "sort=popularity");
 	}
 	
-	@DataProvider(name="queries")
+	@Test(dataProvider="queries")
 	public void validate(QueryBean bean){
 		Assert.assertNotNull(bean.getExpectedQuery());
 		Assert.assertNotNull(bean.getGeneratedQuery());
-		Assert.assertEquals(bean.getGeneratedQuery(), bean.getExpectedQuery());
+		Assert.assertEquals(bean.getExpectedQuery(), bean.getGeneratedQuery());
 	}
 	
 }
