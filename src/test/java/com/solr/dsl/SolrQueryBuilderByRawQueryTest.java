@@ -9,19 +9,12 @@ public class SolrQueryBuilderByRawQueryTest {
 	@DataProvider(name="queries")
 	public Object[][] queriesProvider(){
 		return new Object[][] {
-			{new QueryBean("iphone", SolrQueryBuilder.newQuery("iphone").info().getQuery())},
-			{new QueryBean("2", SolrQueryBuilder.newQuery("iphone").filterBy("name:teste").filterBy("category:categoryName").info().getFilterQueries().size()+"")},
-			{new QueryBean("popularity", SolrQueryBuilder.newQuery("iphone").filterBy("name:teste").sortBy("popularity").info().getSortBy())},
-			{new QueryBean("id,name", SolrQueryBuilder.newQuery("iphone").filterBy("name:teste").sortBy("popularity").and().listBy("id,name").info().getFieldList())},
-			{new QueryBean("category", SolrQueryBuilder.newQuery("iphone")
-													.filterBy("name:teste").and().and()
-													.facetByField("category")
-													.build())},
-			{new QueryBean("teste", SolrQueryBuilder.newQuery("iphone")
-													.sortBy("popularity").and()
-													.listBy("id,name").and()
-													.facetByQuery("teste")
-													.build())}
+			{new QueryBean("iphone", SolrQueryBuilder.fromRawQuery("q=iphone").info().getQuery())},
+			{new QueryBean("2", SolrQueryBuilder.fromRawQuery("q=iphone&fq=name:teste&fq=category:categoryName").info().getFilterQueries().size()+"")},
+			{new QueryBean("popularity", SolrQueryBuilder.fromRawQuery("q=iphone&fq=name:teste&sort=popularity").info().getSortBy())},
+			{new QueryBean("id,name", SolrQueryBuilder.fromRawQuery("q=iphone&fq=name:teste&sort=popularity&fl=id,name").info().getFieldList())},
+			{new QueryBean("category", SolrQueryBuilder.fromRawQuery("q=iphone&fq=name:teste&sort=popularity&facet=true&fl=id,name&facet.field=category").info().getFacetFields())},
+			{new QueryBean("teste", SolrQueryBuilder.fromRawQuery("q=iphone&fq=name:teste&sort=popularity&facet=true&fl=id,name&facet.query=teste&facet.field=category").info().getFacetQueries())}
 		};
 	}
 
