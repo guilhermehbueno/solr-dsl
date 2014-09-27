@@ -24,6 +24,14 @@ public class SolrQueryBuilderByRawQueryTest {
 													.info().getFacetQueries())}
 		};
 	}
+	
+	
+	@Test
+	public void shouldPreserveUnacknowledgedQueryParams(){
+		String query = "q=iphone&fq=name:teste";
+		String queryResult = SolrQueryBuilder.fromRawQuery(query).build();
+		Assert.assertEquals(queryResult, query);
+	}
 
 	@Test
 	public void shouldGetQueryFromRawQuery(){
