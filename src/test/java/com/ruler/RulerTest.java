@@ -12,7 +12,7 @@ import com.solr.dsl.views.FirstCommandAggregation;
 
 public class RulerTest {
 	
-	@Test
+	@Test(enabled=false)
 	public void testFromRuleEditor() throws Exception{
 		RuleResource dsl = RuleLoader.loadDslFrom("http://localhost:3000/persistent/dsl");
 		RuleResource dslr= RuleLoader.loadRuleFrom("http://localhost:3000/persistent/rule", "com.solr.dsl.SolrQueryBuilder");
