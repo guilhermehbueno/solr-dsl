@@ -3,6 +3,22 @@ Simple DSL to build complex queries in Solr
 Examples:
 
 ```java
+/**Handling raw queries*/
+ SQB.fromRawQuery("q=iphone")
+ 		.info().getQuery(); // "iphone"
+ SQB.fromRawQuery("q=iphone&fq=name:teste&fq=category:categoryName")
+ 		.info().getFilterQueries().size(); // "2"
+ SQB.fromRawQuery("q=iphone&fq=name:teste&sort=popularity")
+ 		.info().getSortBy(); // "popularity"
+ SQB.fromRawQuery("q=iphone&fq=name:teste&sort=popularity&fl=id,name")
+ 		.info().getFieldList(); // "id,name"
+ SQB.fromRawQuery("q=iphone&fq=name:teste&sort=popularity&facet=true&fl=id,name&facet.field=category")
+ 		.info().getFacetFields(); // "category"
+ SQB.fromRawQuery("q=iphone&fq=name:teste&sort=popularity&facet=true&fl=id,name&facet.query=teste&facet.field=category")
+ 		.info().getFacetQueries(); // "teste"
+
+
+
 SQB.newQuery("iphone")
 	.build(); 
 //"q=iphone" 

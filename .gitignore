@@ -1,5 +1,6 @@
+target/
 .classpath
 .project
-.settings
-target
-test-output
+.settings/
+test-output/
+.DS_Store

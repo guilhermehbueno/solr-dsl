@@ -28,6 +28,15 @@ public class SolrQueryBuilderTest {
 								.listBy("id,name").and()
 								.facetByField("category")
 								.facetByQuery("teste")
+								.build())},
+			{new QueryBean("q=iphone&fq=name:teste&bq=skuIds:(12321^500 OR 221300^1000)&sort=popularity&facet=true&fl=id,name&facet.query=teste&facet.field=category", 
+				SolrQueryBuilder.newQuery("iphone")
+								.filterBy("name:teste")
+								.boostBy("skuIds:(12321^500 OR 221300^1000)")
+								.sortBy("popularity").and()
+								.listBy("id,name").and()
+								.facetByField("category")
+								.facetByQuery("teste")
 								.build())}
 		};
 	}
