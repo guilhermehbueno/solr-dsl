@@ -16,7 +16,11 @@ Examples:
  		.info().getFacetFields(); // "category"
  SQB.fromRawQuery("q=iphone&fq=name:teste&sort=popularity&facet=true&fl=id,name&facet.query=teste&facet.field=category")
  		.info().getFacetQueries(); // "teste"
-
+ 		
+ 		
+/**Preserve unacknowleged query params*/
+SolrQueryBuilder.fromRawQuery("q=iphone&fq=name:teste&unack=true").build();
+// "q=iphone&fq=name:teste&unack=true&guilherme=bueno"
 
 
 SQB.newQuery("iphone")
