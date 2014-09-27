@@ -20,7 +20,7 @@ Examples:
  		
 /**Preserve unacknowleged query params*/
 SolrQueryBuilder.fromRawQuery("q=iphone&fq=name:teste&unack=true").build();
-// "q=iphone&fq=name:teste&unack=true&guilherme=bueno"
+// "q=iphone&fq=name:teste&unack=true"
 
 
 SQB.newQuery("iphone")
