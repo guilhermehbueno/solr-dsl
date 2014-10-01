@@ -16,12 +16,15 @@ Examples:
  		.info().getFacetFields(); // "category"
  SQB.fromRawQuery("q=iphone&fq=name:teste&sort=popularity&facet=true&fl=id,name&facet.query=teste&facet.field=category")
  		.info().getFacetQueries(); // "teste"
+ 		```
  		
- 		
+```java 		
 /**Preserve unacknowleged query params*/
 SolrQueryBuilder.fromRawQuery("q=iphone&fq=name:teste&unack=true").build();
 // "q=iphone&fq=name:teste&unack=true"
+```
 
+```java
 /**[Future] Handling unacknowleged query params*/
 SolrQueryBuilder.fromRawQuery("q=iphone&fq=name:teste&unack=true")
 		.upsert(field("unack").value("false"))
@@ -55,11 +58,11 @@ SolrQueryBuilder.fromRawQuery("q=iphone&fq=name:teste")
 		.remove(field("facet.custom"))
 		.build();
 // "q=iphone&fq=name:teste
+```
 
 
 
-
-
+```java
 SQB.newQuery("iphone")
 	.build(); 
 //"q=iphone" 
@@ -104,8 +107,10 @@ SQB.newQuery("iphone")
 					.facetByQuery("teste")
 					.build();
 //"q=iphone&fq=name:teste&sort=popularity&facet=true&fl=id,name&facet.query=teste&facet.field=category"
+````
 
 
+```java
 /*Manipulating previous fields*/
 SolrQueryBuilder.newQuery("iphone")
 					.sortBy("popularidade").and()
