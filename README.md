@@ -61,7 +61,7 @@ SolrQueryBuilder.fromRawQuery("q=iphone&fq=name:teste")
 ```
 
 
-
+<h3>Building query from DSL</h3>
 ```java
 SQB.newQuery("iphone")
 	.build(); 
@@ -109,9 +109,8 @@ SQB.newQuery("iphone")
 //"q=iphone&fq=name:teste&sort=popularity&facet=true&fl=id,name&facet.query=teste&facet.field=category"
 ````
 
-
+<h3>Manipulating previous fields</h3>
 ```java
-/*Manipulating previous fields*/
 SolrQueryBuilder.newQuery("iphone")
 					.sortBy("popularidade").and()
 					.listBy("id,name")
