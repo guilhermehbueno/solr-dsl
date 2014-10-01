@@ -29,8 +29,7 @@ SolrQueryBuilder.fromRawQuery("q=iphone&fq=name:teste&unack=true")
 // "q=iphone&fq=name:teste&unack=false
 
 SolrQueryBuilder.fromRawQuery("q=iphone&fq=name:teste")
-		.upsert(field("facet.custom")
-		.value("xpto"))
+		.upsert(field("facet.custom").value("xpto"))
 		.build();
 // "q=iphone&fq=name:teste&facet.custom=xpto
 
@@ -44,6 +43,9 @@ SolrQueryBuilder.fromRawQuery("q=iphone&fq=name:teste")
 		.update(field("facet.custom").value("xpto"))
 		.build();
 // "q=iphone&fq=name:teste
+
+
+
 
 
 SQB.newQuery("iphone")
