@@ -1,9 +1,8 @@
 Simple DSL to build complex queries in Solr
 
 Examples:
-
+<h3>Handling raw queries</h3>
 ```java
-/**Handling raw queries*/
  SQB.fromRawQuery("q=iphone")
  		.info().getQuery(); // "iphone"
  SQB.fromRawQuery("q=iphone&fq=name:teste&fq=category:categoryName")
@@ -18,15 +17,15 @@ Examples:
  		.info().getFacetQueries(); // "teste"
 
 ```
- 		
+
+<h3>Preserve unacknowleged query params</h3>		
 ```java 		
-/**Preserve unacknowleged query params*/
 SolrQueryBuilder.fromRawQuery("q=iphone&fq=name:teste&unack=true").build();
 // "q=iphone&fq=name:teste&unack=true"
 ```
 
+<h3>[Future] Handling unacknowleged query params</h3>
 ```java
-/**[Future] Handling unacknowleged query params*/
 SolrQueryBuilder.fromRawQuery("q=iphone&fq=name:teste&unack=true")
 		.upsert(field("unack").value("false"))
 		.build();
