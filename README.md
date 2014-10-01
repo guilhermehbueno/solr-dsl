@@ -22,6 +22,19 @@ Examples:
 SolrQueryBuilder.fromRawQuery("q=iphone&fq=name:teste&unack=true").build();
 // "q=iphone&fq=name:teste&unack=true"
 
+/**[Future] Handling unacknowleged query params*/
+SolrQueryBuilder.fromRawQuery("q=iphone&fq=name:teste&unack=true").upsert(field("unack").value("false")).build();
+// "q=iphone&fq=name:teste&unack=false
+
+SolrQueryBuilder.fromRawQuery("q=iphone&fq=name:teste").upsert(field("unack").value("false")).build();
+// "q=iphone&fq=name:teste&unack=false
+
+SolrQueryBuilder.fromRawQuery("q=iphone&fq=name:teste").upsert(field("facet.custom").value("xpto")).build();
+// "q=iphone&fq=name:teste&facet.custom=xpto
+
+SolrQueryBuilder.fromRawQuery("q=iphone&fq=name:teste").upsert(field("facet.custom").value("xpto")).upsert(field("facet.custom").value("xpto1")).build();
+// "q=iphone&fq=name:teste&facet.custom=xpto1
+
 
 SQB.newQuery("iphone")
 	.build(); 
