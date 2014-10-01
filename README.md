@@ -16,7 +16,8 @@ Examples:
  		.info().getFacetFields(); // "category"
  SQB.fromRawQuery("q=iphone&fq=name:teste&sort=popularity&facet=true&fl=id,name&facet.query=teste&facet.field=category")
  		.info().getFacetQueries(); // "teste"
- 		```
+
+```
  		
 ```java 		
 /**Preserve unacknowleged query params*/
