@@ -44,6 +44,18 @@ SolrQueryBuilder.fromRawQuery("q=iphone&fq=name:teste")
 		.build();
 // "q=iphone&fq=name:teste
 
+SolrQueryBuilder.fromRawQuery("q=iphone&fq=name:teste")
+		.add(field("facet.custom").value("xpto"))
+		.add(field("facet.custom").value("xpto1"))
+		.build();
+// "q=iphone&fq=name:teste&facet.custom=xpto&facet.custom=xpto1
+
+SolrQueryBuilder.fromRawQuery("q=iphone&fq=name:teste")
+		.add(field("facet.custom").value("xpto"))
+		.remove(field("facet.custom"))
+		.build();
+// "q=iphone&fq=name:teste
+
 
 
 
