@@ -12,7 +12,7 @@ import com.solr.dsl.views.FirstCommandAggregation;
 
 public class RulerTest {
 	
-	@Test
+	@Test(enabled=false)
 	public void testFromRuleEditor() throws Exception{
 		RuleResource dsl = RuleLoader.loadDslFrom("http://localhost:3000/persistent/dsl");
 		RuleResource dslr= RuleLoader.loadRuleFrom("http://localhost:3000/persistent/rule", "com.solr.dsl.SolrQueryBuilder");
@@ -31,7 +31,7 @@ public class RulerTest {
 		System.out.println("Resultado:"+queryBuilder.build());
 	}
 	
-	@Test
+	@Test(enabled=false)
 	public void test() throws Exception{
 		RuleResource dsl = new RuleResource();
 		RuleResource dslr= new RuleResource();
