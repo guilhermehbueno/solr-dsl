@@ -14,12 +14,6 @@ public class QueryConfigureCommand implements SecondCommandAggregation, ThirdCom
 	private final PrimarySolrQuery primarySolrQuery;
 	private final SecondSolrQuery secondSolrQuery;
 	
-	public QueryConfigureCommand(PrimarySolrQuery primarySolrQuery) {
-		super();
-		this.primarySolrQuery=primarySolrQuery;
-		this.secondSolrQuery = new SecondSolrQuery();
-	}
-	
 	public QueryConfigureCommand(PrimarySolrQuery primarySolrQuery, SecondSolrQuery secondSolrQuery) {
 		super();
 		this.primarySolrQuery = primarySolrQuery;
@@ -42,24 +36,36 @@ public class QueryConfigureCommand implements SecondCommandAggregation, ThirdCom
 	}
 
 	public ThirdCommandAggregation facetByField(String command) {
+		if(command==null){
+			return this;
+		}
 		this.secondSolrQuery.setEnabledFacet(true);
 		this.secondSolrQuery.setFacetByField("facet.field="+command);
 		return this;
 	}
 
 	public ThirdCommandAggregation facetByQuery(String command) {
+		if(command==null){
+			return this;
+		}
 		this.secondSolrQuery.setEnabledFacet(true);
 		this.secondSolrQuery.setFacetByQuery("facet.query="+command);
 		return this;
 	}
 
 	public ThirdCommandAggregation facetByPrefix(String command) {
+		if(command==null){
+			return this;
+		}
 		this.secondSolrQuery.setEnabledFacet(true);
 		this.secondSolrQuery.setFacetByPrefix("facet.prefix="+command);
 		return this;
 	}
 
 	public SecondCommandAggregation listBy(String fields) {
+		if(fields==null){
+			return this;
+		}
 		this.secondSolrQuery.setListBy("fl="+fields);
 		return this;
 	}
@@ -79,24 +85,36 @@ public class QueryConfigureCommand implements SecondCommandAggregation, ThirdCom
 			return facetByField;
 		}
 		public void setFacetByField(String facetByField) {
+			if(facetByField==null){
+				return;
+			}
 			this.facetByField = facetByField;
 		}
 		public String getFacetByQuery() {
 			return facetByQuery;
 		}
 		public void setFacetByQuery(String facetByQuery) {
+			if(facetByQuery==null){
+				return;
+			}
 			this.facetByQuery = facetByQuery;
 		}
 		public String getFacetByPrefix() {
 			return facetByPrefix;
 		}
 		public void setFacetByPrefix(String facetByPrefix) {
+			if(facetByPrefix==null){
+				return;
+			}
 			this.facetByPrefix = facetByPrefix;
 		}
 		public String getListBy() {
 			return listBy;
 		}
 		public void setListBy(String listBy) {
+			if(listBy==null){
+				return;
+			}
 			this.listBy = listBy;
 		}
 		public boolean isEnabledFacet() {

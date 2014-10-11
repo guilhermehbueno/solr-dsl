@@ -49,6 +49,18 @@ public class SolrQueryBuilderTest {
 	}
 	
 	@Test
+	public void shouldBuildQueryWithoutConfigurationFields(){
+		String query = SolrQueryBuilder.newQuery("iphone").and().and().build();
+		Assert.assertEquals(query, "q=iphone");
+	}
+	
+	@Test
+	public void shouldBuildQueryWithoutConfigurationFieldsAndWithFacetQuery(){
+		String query = SolrQueryBuilder.newQuery("iphone").and().and().facetByQuery("teste:teste").build();
+		Assert.assertEquals(query, "q=iphone&facet=true&facet.query=teste:teste");
+	}
+	
+	@Test
 	public void shouldGoToInit(){
 		String build = SolrQueryBuilder.newQuery("iphone").sortBy("popularidade").and().listBy("id,name").goToInit().sortBy("popularity").build();
 		System.out.println(build);
