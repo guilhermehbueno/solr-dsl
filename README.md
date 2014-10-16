@@ -124,5 +124,5 @@ SolrQueryBuilder.newQuery("iphone")
 
 Interfaces
 
-FirstCommandAggregation || SecondCommandAggregation    || ThirdCommandAggregation
+SolrQuery || SecondCommandAggregation    || ThirdCommandAggregation
 QueryCommandAggregation || ConfigureCommandAggregation || FacetCommandAggregation
