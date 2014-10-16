@@ -4,6 +4,8 @@ import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import com.solr.dsl.views.SolrQuery;
+
 public class SolrQueryBuilderTest {
 	
 	@DataProvider(name="queries")
@@ -66,5 +68,12 @@ public class SolrQueryBuilderTest {
 		System.out.println(build);
 		Assert.assertNotNull(build);
 		Assert.assertEquals(build, "q=iphone&sort=popularity&fl=id,name");
+	}
+	
+	@Test
+	public void shouldBuildQuery(){
+		String originalQuery = "q=iphone&sort=availability desc,score desc&rows=10&start=0&facet=true&locale=pt_BR";
+		SolrQuery query = SolrQueryBuilder.fromRawQuery(originalQuery);
+		Assert.assertEquals(originalQuery, query.build());
 	}
 }

@@ -8,7 +8,7 @@ import rule.client.RuleResource;
 import rule.client.RulesExecutor6;
 
 import com.solr.dsl.SolrQueryBuilder;
-import com.solr.dsl.views.FirstCommandAggregation;
+import com.solr.dsl.views.SolrQuery;
 
 public class RulerTest {
 	
@@ -25,7 +25,7 @@ public class RulerTest {
 		System.out.println(dslr.getContent());
 		
 		RulesExecutor6 rulesExecutor6 = new RulesExecutor6(dsl, dslr);
-		FirstCommandAggregation queryBuilder = SolrQueryBuilder.newQuery("Iphone");
+		SolrQuery queryBuilder = SolrQueryBuilder.newQuery("Iphone");
 		Assert.assertEquals(queryBuilder.info().getQuery(), "q=Iphone");
 		rulesExecutor6.execute(queryBuilder);
 		System.out.println("Resultado:"+queryBuilder.build());
@@ -40,7 +40,7 @@ public class RulerTest {
 		dslr.setResourceName("search.dslr");
 		
 		RulesExecutor6 rulesExecutor6 = new RulesExecutor6(dsl, dslr);
-		FirstCommandAggregation queryBuilder = SolrQueryBuilder.newQuery("Iphone");
+		SolrQuery queryBuilder = SolrQueryBuilder.newQuery("Iphone");
 		Assert.assertEquals(queryBuilder.info().getQuery(), "q=Iphone");
 		rulesExecutor6.execute(queryBuilder);
 		System.out.println("Resultado:"+queryBuilder.build());

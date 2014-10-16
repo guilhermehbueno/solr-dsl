@@ -1,5 +1,5 @@
 package com.solr.dsl.views;
 
 public interface BoostBy {
-	public FirstCommandAggregation boostBy(String command);
+	public SolrQuery boostBy(String command);
 }

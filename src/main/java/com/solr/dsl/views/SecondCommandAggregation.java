@@ -6,7 +6,7 @@ import com.solr.dsl.views.info.QueryInfo;
 public interface SecondCommandAggregation extends ListFieldsBy, BuilderToString{
 	
 	ThirdCommandAggregation and();
-	FirstCommandAggregation goToInit();
+	SolrQuery goToInit();
 	QueryInfo info();
 
 }

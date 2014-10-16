@@ -3,8 +3,9 @@ package com.solr.dsl;
 import org.apache.commons.lang3.StringUtils;
 
 import com.solr.dsl.SolrQueryBuilder.PrimarySolrQuery;
-import com.solr.dsl.views.FirstCommandAggregation;
+import com.solr.dsl.views.SolrQuery;
 import com.solr.dsl.views.SecondCommandAggregation;
+import com.solr.dsl.views.SolrQuery;
 import com.solr.dsl.views.ThirdCommandAggregation;
 import com.solr.dsl.views.build.BuilderToString;
 import com.solr.dsl.views.info.QueryInfo;
@@ -70,7 +71,7 @@ public class QueryConfigureCommand implements SecondCommandAggregation, ThirdCom
 		return this;
 	}
 
-	public FirstCommandAggregation goToInit() {
+	public SolrQuery goToInit() {
 		return new SolrQueryBuilder(this.primarySolrQuery, this.secondSolrQuery);
 	}
 	
