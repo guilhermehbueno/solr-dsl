@@ -3,12 +3,15 @@ package com.solr.dsl;
 import org.apache.commons.lang3.StringUtils;
 
 import com.solr.dsl.SolrQueryBuilder.PrimarySolrQuery;
-import com.solr.dsl.views.SolrQuery;
+import com.solr.dsl.scaffold.QueryScaffold;
+import com.solr.dsl.scaffold.ScaffoldField;
 import com.solr.dsl.views.SecondCommandAggregation;
 import com.solr.dsl.views.SolrQuery;
 import com.solr.dsl.views.ThirdCommandAggregation;
 import com.solr.dsl.views.build.BuilderToString;
 import com.solr.dsl.views.info.QueryInfo;
+
+import static com.solr.dsl.scaffold.FieldBuilder.field;
 
 public class QueryConfigureCommand implements SecondCommandAggregation, ThirdCommandAggregation{
 	
@@ -40,8 +43,7 @@ public class QueryConfigureCommand implements SecondCommandAggregation, ThirdCom
 		if(command==null){
 			return this;
 		}
-		this.secondSolrQuery.setEnabledFacet(true);
-		this.secondSolrQuery.setFacetByField("facet.field="+command);
+		this.secondSolrQuery.setFacetByField(field("facet.field").value(command));
 		return this;
 	}
 
@@ -49,8 +51,7 @@ public class QueryConfigureCommand implements SecondCommandAggregation, ThirdCom
 		if(command==null){
 			return this;
 		}
-		this.secondSolrQuery.setEnabledFacet(true);
-		this.secondSolrQuery.setFacetByQuery("facet.query="+command);
+		this.secondSolrQuery.setFacetByQuery(field("facet.query").value(command));
 		return this;
 	}
 
@@ -58,8 +59,7 @@ public class QueryConfigureCommand implements SecondCommandAggregation, ThirdCom
 		if(command==null){
 			return this;
 		}
-		this.secondSolrQuery.setEnabledFacet(true);
-		this.secondSolrQuery.setFacetByPrefix("facet.prefix="+command);
+		this.secondSolrQuery.setFacetByPrefix(field("facet.prexy").value(command));
 		return this;
 	}
 
@@ -67,7 +67,8 @@ public class QueryConfigureCommand implements SecondCommandAggregation, ThirdCom
 		if(fields==null){
 			return this;
 		}
-		this.secondSolrQuery.setListBy("fl="+fields);
+		
+		this.secondSolrQuery.setListBy(field("fl").value(fields));
 		return this;
 	}
 
@@ -76,58 +77,59 @@ public class QueryConfigureCommand implements SecondCommandAggregation, ThirdCom
 	}
 	
 	static class SecondSolrQuery implements BuilderToString{
-		private String facetByField;
-		private String facetByQuery;
-		private String facetByPrefix;
-		private String listBy;
-		private boolean enabledFacet=false;
+		private final QueryScaffold scaffold;
 		
-		public String getFacetByField() {
-			return facetByField;
+		public SecondSolrQuery(QueryScaffold scaffold) {
+			super();
+			this.scaffold = scaffold;
 		}
-		public void setFacetByField(String facetByField) {
+		public String getFacetByField() {
+			return this.scaffold.getByName("facet.field").getValue();
+		}
+		public void setFacetByField(ScaffoldField facetByField) {
 			if(facetByField==null){
 				return;
 			}
-			this.facetByField = facetByField;
+			scaffold.add(facetByField);
+			
 		}
 		public String getFacetByQuery() {
-			return facetByQuery;
+			return this.scaffold.getByName("facet.query").toString();
 		}
-		public void setFacetByQuery(String facetByQuery) {
+		public void setFacetByQuery(ScaffoldField facetByQuery) {
 			if(facetByQuery==null){
 				return;
 			}
-			this.facetByQuery = facetByQuery;
+			scaffold.add(facetByQuery);
 		}
 		public String getFacetByPrefix() {
-			return facetByPrefix;
+			return this.scaffold.getByName("facet.prefix").getValue();
 		}
-		public void setFacetByPrefix(String facetByPrefix) {
+		public void setFacetByPrefix(ScaffoldField facetByPrefix) {
 			if(facetByPrefix==null){
 				return;
 			}
-			this.facetByPrefix = facetByPrefix;
+			scaffold.add(facetByPrefix);
 		}
 		public String getListBy() {
-			return listBy;
+			return this.scaffold.getByName("fl").toString();
 		}
-		public void setListBy(String listBy) {
+		public void setListBy(ScaffoldField listBy) {
 			if(listBy==null){
 				return;
 			}
-			this.listBy = listBy;
-		}
-		public boolean isEnabledFacet() {
-			return enabledFacet;
-		}
-		public void setEnabledFacet(boolean enabledFacet) {
-			this.enabledFacet = enabledFacet;
+			scaffold.add(listBy);
 		}
 		
 		public String build() {
 			StringBuilder sb = new StringBuilder();
-			if(this.enabledFacet){
+			
+			String facetByField= 	this.scaffold.getByName("facet.field")!=null? this.scaffold.getByName("facet.field").toString(): null;
+			String facetByQuery=	this.scaffold.getByName("facet.query")!=null? this.scaffold.getByName("facet.query").toString(): null;
+			String facetByPrefix=	this.scaffold.getByName("facet.prefix")!=null? this.scaffold.getByName("facet.prefix").toString(): null;
+			String listBy=			this.scaffold.getByName("fl")!=null? this.scaffold.getByName("fl").toString(): null;
+			
+			if(StringUtils.isNotEmpty(facetByQuery) || StringUtils.isNotEmpty(facetByField) || StringUtils.isNotEmpty(facetByPrefix)){
 				sb.append("&").append("facet=true");
 			}
 			if(StringUtils.isNotEmpty(listBy)){

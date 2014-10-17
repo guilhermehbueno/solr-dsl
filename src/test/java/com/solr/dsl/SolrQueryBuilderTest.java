@@ -75,5 +75,6 @@ public class SolrQueryBuilderTest {
 		String originalQuery = "q=iphone&sort=availability desc,score desc&rows=10&start=0&facet=true&locale=pt_BR";
 		SolrQuery query = SolrQueryBuilder.fromRawQuery(originalQuery);
 		Assert.assertEquals(originalQuery, query.build());
+		query.boostBy("brandName:sony^1000");
 	}
 }
