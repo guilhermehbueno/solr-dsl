@@ -1,5 +1,6 @@
 package com.solr.dsl;
 
+import org.testng.Assert;
 import org.testng.annotations.Test;
 import static com.solr.dsl.scaffold.FieldBuilder.field;
 
@@ -7,9 +8,24 @@ public class QueryParamHandlerTest {
 
 	@Test
 	public void shouldUpdateParam(){
-		SolrQueryBuilder.fromRawQuery("").change().update(field("teste").value("xpto"));
-		SolrQueryBuilder.fromRawQuery("").change().upsert(field("teste").value("xpto"));
-		SolrQueryBuilder.fromRawQuery("").change().add(field("teste").value("xpto"));
+		String query = SolrQueryBuilder.fromRawQuery("q=teste")
+									   .change()
+									   .upsert(field("q").value("xpto"))
+									   .upsert(field("q").value("xpto1"))
+									   .goToInit()
+									   .build();
+		
+		Assert.assertEquals(query, "q=xpto1");
+		
+		System.out.println(query);
+		String build = SolrQueryBuilder.fromRawQuery("q=qwerty")
+						.change()
+						.add(field("q").value("xpto"))
+						.goToInit()
+						.build();
+		
+		System.out.println(build);
+		
 		SolrQueryBuilder.fromRawQuery("").change().remove("teste");
 		
 		SolrQueryBuilder.fromRawQuery("").info().getQuery();

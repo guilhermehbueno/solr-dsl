@@ -8,5 +8,6 @@ public interface QueryParamHandler {
 	public QueryParamHandler update(ScaffoldField field);
 	public QueryParamHandler add(ScaffoldField field);
 	public QueryParamHandler remove(String fieldName);
+	public SolrQuery goToInit();
 
 }

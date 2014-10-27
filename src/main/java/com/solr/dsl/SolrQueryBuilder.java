@@ -28,7 +28,7 @@ public class SolrQueryBuilder implements SolrQuery, QueryInfo {
 	private final QueryScaffold scaffold = new QueryScaffold();
 	private final SecondSolrQuery secondSolrQuery;
 	private final PrimarySolrQuery primarySolrQuery = new PrimarySolrQuery(scaffold);
-	private final QueryParamHandler queryParamHandler = new QueryParamHandlerImpl(scaffold);
+	private final QueryParamHandler queryParamHandler = new QueryParamHandlerImpl(scaffold, this);
 	private static final List<String> recognizedQueryParams = new ArrayList<String>();
 
 	static {
@@ -40,14 +40,18 @@ public class SolrQueryBuilder implements SolrQuery, QueryInfo {
 
 	private SolrQueryBuilder(String query) {
 		super();
-		this.scaffold.add(field("q").value(query));
+		if(query == null){
+			query="*:*";
+		}
 		this.primarySolrQuery.setQuery(field("q").value(query));
 		this.secondSolrQuery = new SecondSolrQuery(this.scaffold);
 	}
 	
 	private SolrQueryBuilder(String query, List<NameValuePair> unacknowledgeFields) {
 		super();
-		this.scaffold.add(field("q").value(query));
+		if(query == null){
+			query="*:*";
+		}
 		this.primarySolrQuery.setQuery(field("q").value(query));
 		this.primarySolrQuery.addAllUnacknowledgeFields(unacknowledgeFields);
 		this.secondSolrQuery = new SecondSolrQuery(this.scaffold);

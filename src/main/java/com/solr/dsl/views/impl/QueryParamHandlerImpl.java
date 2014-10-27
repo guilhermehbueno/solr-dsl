@@ -3,33 +3,49 @@ package com.solr.dsl.views.impl;
 import com.solr.dsl.scaffold.QueryScaffold;
 import com.solr.dsl.scaffold.ScaffoldField;
 import com.solr.dsl.views.QueryParamHandler;
+import com.solr.dsl.views.SolrQuery;
 
 public class QueryParamHandlerImpl implements QueryParamHandler {
 	
 	private final QueryScaffold scaffold;
+	private final SolrQuery solrQuery;
 	
-	public QueryParamHandlerImpl(QueryScaffold scaffold) {
+	public QueryParamHandlerImpl(QueryScaffold scaffold, SolrQuery solrQuery) {
 		super();
 		this.scaffold = scaffold;
+		this.solrQuery = solrQuery;
 	}
 
 	public QueryParamHandler upsert(ScaffoldField field) {
-		// TODO Auto-generated method stub
-		return null;
+		ScaffoldField fieldRecovered = this.scaffold.getByName(field.getName());
+		if(fieldRecovered!=null){
+			fieldRecovered.setValue(field.getValue());
+		}else{
+			this.scaffold.add(field);
+		}
+		return this;
 	}
 
 	public QueryParamHandler update(ScaffoldField field) {
-		// TODO Auto-generated method stub
-		return null;
+		ScaffoldField fieldRecovered = this.scaffold.getByName(field.getName());
+		if(fieldRecovered!=null){
+			fieldRecovered.setValue(field.getValue());
+		}
+		return this;
 	}
 
 	public QueryParamHandler add(ScaffoldField field) {
-		// TODO Auto-generated method stub
-		return null;
+		this.scaffold.add(field);
+		return this;
 	}
 
 	public QueryParamHandler remove(String fieldName) {
-		// TODO Auto-generated method stub
-		return null;
+		ScaffoldField fieldRecovered = this.scaffold.getByName(fieldName);
+		this.scaffold.remove(fieldRecovered);
+		return this;
+	}
+
+	public SolrQuery goToInit() {
+		return this.solrQuery;
 	}
 }
