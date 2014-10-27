@@ -35,10 +35,5 @@
 			<artifactId>guava</artifactId>
 			<version>18.0</version>
 		</dependency>
-		<dependency>
-			<groupId>rule.client</groupId>
-			<artifactId>ruler</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
 	</dependencies>
 </project>
