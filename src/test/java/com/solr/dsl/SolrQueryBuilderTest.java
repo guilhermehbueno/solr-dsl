@@ -74,8 +74,14 @@ public class SolrQueryBuilderTest {
 	    Assert.assertEquals(query, "q=iphone&facet=false&facet.field=name_text_pt");
 	}
 	
-	
+	@Test
 	public void shouldOverwriteQueryParam(){
-	    
+	    String result = SolrQueryBuilder.newQuery("iphone")
+		.filterBy("name:teste")
+		.sortBy("popularity").and()
+		.listBy("id,name").and()
+		.facetByField("category")
+		.build();
+	    System.out.println("Result: " + result);
 	}
 }

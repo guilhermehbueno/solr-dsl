@@ -7,4 +7,5 @@ public interface SmartQuery extends FilterBy, SortBy, BoostBy, BuilderToString{
 	
 	SecondCommandAggregation and();
 	QueryInfo info();
+	QueryParamHandler change();
 }
