@@ -73,4 +73,9 @@ public class SolrQueryBuilderTest {
 	    String query = SolrQueryBuilder.newQuery("iphone").and().and().facetByField("name_text_pt").disableFacet().build();
 	    Assert.assertEquals(query, "q=iphone&facet=false&facet.field=name_text_pt");
 	}
+	
+	
+	public void shouldOverwriteQueryParam(){
+	    
+	}
 }
