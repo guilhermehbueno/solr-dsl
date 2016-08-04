@@ -245,8 +245,7 @@ public class SolrQueryBuilder implements SmartQuery, QueryInfo {
 		}
 
 		public String getQuery() {
-			ScaffoldField field = this.scaffold.getByName("q");
-			return field.toString();
+			return this.scaffold.getValueByName("q");
 		}
 		
 		public ScaffoldField getQueryScaffoldField() {

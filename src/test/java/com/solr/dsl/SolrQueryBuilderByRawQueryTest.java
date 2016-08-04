@@ -3,6 +3,7 @@ package com.solr.dsl;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+
 import com.solr.dsl.views.SmartQuery;
 
 public class SolrQueryBuilderByRawQueryTest {
@@ -10,7 +11,7 @@ public class SolrQueryBuilderByRawQueryTest {
 	@DataProvider(name="queries")
 	public Object[][] queriesProvider(){
 		return new Object[][] {
-				{new QueryBean("q=iphone", SolrQueryBuilder.fromRawQuery("q=iphone").info().getQuery())},
+				{new QueryBean("iphone", SolrQueryBuilder.fromRawQuery("q=iphone").info().getQuery())},
 				{new QueryBean("2", SolrQueryBuilder.fromRawQuery("q=iphone&fq=name:teste&fq=category:categoryName").info().getFilterQueries().size()+"")},
 				{new QueryBean("sort=popularity", SolrQueryBuilder.fromRawQuery("iphone&fq=name:teste&sort=popularity").info().getSortBy())},
 				{new QueryBean("fl=id,name", SolrQueryBuilder.fromRawQuery("iphone&fq=name:teste&sort=popularity&fl=id,name").info().getFieldList())},
@@ -35,7 +36,7 @@ public class SolrQueryBuilderByRawQueryTest {
 
 	@Test
 	public void shouldGetQueryFromRawQuery(){
-		Assert.assertEquals(SolrQueryBuilder.fromRawQuery("q=iphone&fq=name:teste").info().getQuery(), "q=iphone");
+		Assert.assertEquals(SolrQueryBuilder.fromRawQuery("q=iphone&fq=name:teste").info().getQuery(), "iphone");
 	}
 	
 	@Test

@@ -28,6 +28,17 @@ public class QueryScaffold {
 		return result;
 	}
 	
+	public String getValueByName(String name){
+		ScaffoldField  result = null;
+		for (ScaffoldField field : this.fields) {
+			if(field.getName().equalsIgnoreCase(name)){
+				result=field;
+			}
+		}
+		if(result == null) return null;
+		return result.getValue();
+	}
+	
 	@Override
 	public String toString() {
 	    List<String> params = fields.stream().map(field -> {

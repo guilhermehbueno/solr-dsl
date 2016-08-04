@@ -4,6 +4,8 @@ import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import com.solr.dsl.views.SmartQuery;
+
 public class SolrQueryBuilderTest {
 	
 	@DataProvider(name="queries")
@@ -83,5 +85,11 @@ public class SolrQueryBuilderTest {
 		.facetByField("category")
 		.build();
 	    System.out.println("Result: " + result);
+	}
+	
+	@Test
+	public void shouldReturnQueryValue(){
+	    SmartQuery smartQuery = SolrQueryBuilder.fromRawQuery("q=teste&wt=json&indent=true&facet.field=name_text_pt");
+	    Assert.assertEquals("teste", smartQuery.info().getQuery());
 	}
 }
