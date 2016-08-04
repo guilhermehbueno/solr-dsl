@@ -67,4 +67,10 @@ public class SolrQueryBuilderTest {
 		Assert.assertNotNull(build);
 		Assert.assertEquals(build, "q=iphone&sort=popularity&fl=id,name");
 	}
+	
+	@Test
+	public void shouldToggleFacet(){
+	    String query = SolrQueryBuilder.newQuery("iphone").and().and().facetByField("name_text_pt").disableFacet().build();
+	    Assert.assertEquals(query, "q=iphone&facet=false&facet.field=name_text_pt");
+	}
 }

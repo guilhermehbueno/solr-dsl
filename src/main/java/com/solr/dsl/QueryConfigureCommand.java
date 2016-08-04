@@ -3,8 +3,8 @@ package com.solr.dsl;
 import org.apache.commons.lang3.StringUtils;
 
 import com.solr.dsl.SolrQueryBuilder.PrimarySolrQuery;
-import com.solr.dsl.views.FirstCommandAggregation;
 import com.solr.dsl.views.SecondCommandAggregation;
+import com.solr.dsl.views.SmartQuery;
 import com.solr.dsl.views.ThirdCommandAggregation;
 import com.solr.dsl.views.build.BuilderToString;
 import com.solr.dsl.views.info.QueryInfo;
@@ -70,7 +70,7 @@ public class QueryConfigureCommand implements SecondCommandAggregation, ThirdCom
 		return this;
 	}
 
-	public FirstCommandAggregation goToInit() {
+	public SmartQuery goToInit() {
 		return new SolrQueryBuilder(this.primarySolrQuery, this.secondSolrQuery);
 	}
 	
@@ -79,7 +79,7 @@ public class QueryConfigureCommand implements SecondCommandAggregation, ThirdCom
 		private String facetByQuery;
 		private String facetByPrefix;
 		private String listBy;
-		private boolean enabledFacet=false;
+		private Boolean enabledFacet;
 		
 		public String getFacetByField() {
 			return facetByField;
@@ -126,8 +126,12 @@ public class QueryConfigureCommand implements SecondCommandAggregation, ThirdCom
 		
 		public String build() {
 			StringBuilder sb = new StringBuilder();
-			if(this.enabledFacet){
-				sb.append("&").append("facet=true");
+			if(this.enabledFacet != null && this.enabledFacet == true){
+			    sb.append("&").append("facet=true");
+			}else{
+			    if(StringUtils.isNotEmpty(facetByQuery) || StringUtils.isNotEmpty(facetByField) || StringUtils.isNotEmpty(facetByPrefix)){
+				sb.append("&").append("facet=false");
+			    }
 			}
 			if(StringUtils.isNotEmpty(listBy)){
 				sb.append("&").append(listBy);
@@ -146,5 +150,15 @@ public class QueryConfigureCommand implements SecondCommandAggregation, ThirdCom
 			}
 			return sb.toString();
 		}
+	}
+
+	public ThirdCommandAggregation enableFacet() {
+	    this.secondSolrQuery.setEnabledFacet(true);
+	    return this;
+	}
+
+	public ThirdCommandAggregation disableFacet() {
+	    this.secondSolrQuery.setEnabledFacet(false);
+	    return this;
 	}
 }

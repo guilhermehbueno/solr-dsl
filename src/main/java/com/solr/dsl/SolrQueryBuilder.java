@@ -10,12 +10,12 @@ import org.apache.http.NameValuePair;
 
 import com.solr.dsl.QueryConfigureCommand.SecondSolrQuery;
 import com.solr.dsl.raw.SolrQueryRawExtractor;
-import com.solr.dsl.views.FirstCommandAggregation;
 import com.solr.dsl.views.SecondCommandAggregation;
+import com.solr.dsl.views.SmartQuery;
 import com.solr.dsl.views.build.BuilderToString;
 import com.solr.dsl.views.info.QueryInfo;
 
-public class SolrQueryBuilder implements FirstCommandAggregation, QueryInfo {
+public class SolrQueryBuilder implements SmartQuery, QueryInfo {
 
 	private final PrimarySolrQuery primarySolrQuery = new PrimarySolrQuery();
 	private final SecondSolrQuery secondSolrQuery;
@@ -23,7 +23,7 @@ public class SolrQueryBuilder implements FirstCommandAggregation, QueryInfo {
 
 	static {
 		String [] recoFields = new String[] { 
-			"q", "fq", "bf", "fl", "facet.field", "facet.query", "facet.prefix", "bq", "sort" 
+			"q", "fq", "bf", "fl", "facet", "facet.field", "facet.query", "facet.prefix", "bq", "sort" 
 		};
 		recognizedQueryParams.addAll(Arrays.asList(recoFields));
 	}
@@ -92,15 +92,16 @@ public class SolrQueryBuilder implements FirstCommandAggregation, QueryInfo {
 		return this.primarySolrQuery.getSortBy();
 	}
 
-	public static FirstCommandAggregation fromRawQuery(String rawQuery) {
+	public static SmartQuery fromRawQuery(String rawQuery) {
 		String query = SolrQueryRawExtractor.getSingleQueryParamValue(rawQuery,	"q");
 		List<NameValuePair> unacknowledgedQueryParams = SolrQueryRawExtractor.getUnacknowledgedQueryParams(recognizedQueryParams, rawQuery);
-		FirstCommandAggregation SQB = new SolrQueryBuilder(query, unacknowledgedQueryParams);
+		SmartQuery SQB = new SolrQueryBuilder(query, unacknowledgedQueryParams);
 		List<NameValuePair> paramValues = SolrQueryRawExtractor.getMultiQueryParamValue(rawQuery, "fq");
 		for (NameValuePair nameValuePair : paramValues) {
 			SQB.filterBy(nameValuePair.getValue());
 		}
 
+		//TODO: EXTRAIR FACET=TRUE
 		SQB.sortBy(SolrQueryRawExtractor.getSingleQueryParamValue(rawQuery, "sort"))
 		   		.boostBy(SolrQueryRawExtractor.getSingleQueryParamValue(rawQuery, "bq")).and()
 				.listBy(SolrQueryRawExtractor.getSingleQueryParamValue(rawQuery, "fl")).and()
@@ -110,14 +111,14 @@ public class SolrQueryBuilder implements FirstCommandAggregation, QueryInfo {
 		return SQB;
 	}
 
-	public static FirstCommandAggregation newQuery(String query) {
+	public static SmartQuery newQuery(String query) {
 		if (query == null) {
 			return new SolrQueryBuilder("q=*:*");
 		}
 		return new SolrQueryBuilder("q=" + query);
 	}
 
-	public FirstCommandAggregation boostBy(String command) {
+	public SmartQuery boostBy(String command) {
 		if (StringUtils.isEmpty(command)) {
 			return this;
 		}
@@ -125,7 +126,7 @@ public class SolrQueryBuilder implements FirstCommandAggregation, QueryInfo {
 		return this;
 	}
 
-	public FirstCommandAggregation filterBy(String command) {
+	public SmartQuery filterBy(String command) {
 		if (StringUtils.isEmpty(command)) {
 			return this;
 		}
@@ -133,7 +134,7 @@ public class SolrQueryBuilder implements FirstCommandAggregation, QueryInfo {
 		return this;
 	}
 
-	public FirstCommandAggregation sortBy(String command) {
+	public SmartQuery sortBy(String command) {
 		if (StringUtils.isEmpty(command)) {
 			return this;
 		}
@@ -232,5 +233,14 @@ public class SolrQueryBuilder implements FirstCommandAggregation, QueryInfo {
 			}
 			return sb.toString();
 		}
+	}
+
+	public SmartQuery enable() {
+	    return null;
+	}
+
+	public SmartQuery disable() {
+	    // TODO Auto-generated method stub
+	    return null;
 	}
 }

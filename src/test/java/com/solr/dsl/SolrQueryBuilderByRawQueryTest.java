@@ -3,7 +3,7 @@ package com.solr.dsl;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import com.solr.dsl.views.FirstCommandAggregation;
+import com.solr.dsl.views.SmartQuery;
 
 public class SolrQueryBuilderByRawQueryTest {
 	
@@ -20,7 +20,7 @@ public class SolrQueryBuilderByRawQueryTest {
 	
 	@Test
 	public void shouldGetFacetQueryFromRawQuery(){
-		FirstCommandAggregation SQB = SolrQueryBuilder.fromRawQuery("q=testando&facet.query=teste&fl=name,id&fq=name:teste");
+		SmartQuery SQB = SolrQueryBuilder.fromRawQuery("q=testando&facet.query=teste&fl=name,id&fq=name:teste");
 		String facetQueries = SQB.info().getFacetQueries();
 		Assert.assertEquals(facetQueries, "facet.query=teste");
 	}
