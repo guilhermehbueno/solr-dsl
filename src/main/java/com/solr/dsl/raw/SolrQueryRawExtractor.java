@@ -3,12 +3,10 @@ package com.solr.dsl.raw;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
-
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
 
 public class SolrQueryRawExtractor {
 	
@@ -22,15 +20,7 @@ public class SolrQueryRawExtractor {
 	
 	public static List<NameValuePair> getUnacknowledgedQueryParams(final List<String> fields, String queryString){
 		List<NameValuePair> parse = URLEncodedUtils.parse(queryString, Charset.defaultCharset());
-		List<NameValuePair> transformedList = Lists.transform(parse, new Function<NameValuePair, NameValuePair>(){
-			public NameValuePair apply(NameValuePair pair) {
-				if(!fields.contains(pair.getName())){
-					return pair;
-				}
-				return null;
-			}
-		});
-		return transformedList;
+		return parse.stream().filter( field -> !fields.contains(field.getName())).collect(Collectors.toList());
 	}
 	
 	public static String getSingleQueryParamValue(String queryString, String paramName){

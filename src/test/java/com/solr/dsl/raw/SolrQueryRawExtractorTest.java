@@ -1,6 +1,7 @@
 package com.solr.dsl.raw;
 
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.http.NameValuePair;
@@ -23,6 +24,17 @@ public class SolrQueryRawExtractorTest {
 	@Test(dataProvider="queries")
 	public void shouldExtractSingleQueryParamProperly(QueryBean queryBean){
 		Assert.assertEquals(queryBean.getExpectedQuery(), queryBean.getGeneratedQuery());
+	}
+	
+	@Test
+	public void shouldExtractUnacknowledgeQueryParams(){
+	    String query = "unknow=abc&q=teste";
+	    List<String> fields = Arrays.asList("q");
+	    List<NameValuePair> params = SolrQueryRawExtractor.getUnacknowledgedQueryParams(fields, query);
+	    Assert.assertNotNull(params);
+	    Assert.assertTrue(params.size()==1);
+	    Assert.assertEquals(params.get(0).getName(), "unknow");
+	    Assert.assertEquals(params.get(0).getValue(), "abc");
 	}
 	
 	@Test

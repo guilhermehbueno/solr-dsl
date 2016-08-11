@@ -241,6 +241,7 @@ public class SolrQueryBuilder implements SmartQuery, QueryInfo {
 		}
 		
 		public boolean addAllUnacknowledgeFields(Collection<? extends NameValuePair> fields) {
+		    	fields.forEach(field -> this.scaffold.add(new ScaffoldField(field.getName(), field.getValue())));
 			return unacknowledgeFields.addAll(fields);
 		}
 
@@ -297,5 +298,10 @@ public class SolrQueryBuilder implements SmartQuery, QueryInfo {
 			}
 			return sb.toString();
 		}
+	}
+
+	@Override
+	public <T> T getFieldValue(String fieldName) {
+	    return (T) this.scaffold.getValueByName(fieldName);
 	}
 }
