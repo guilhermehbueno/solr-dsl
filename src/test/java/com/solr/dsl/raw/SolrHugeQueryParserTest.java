@@ -14,7 +14,17 @@ import com.solr.dsl.views.SmartQuery;
 public class SolrHugeQueryParserTest {
     
     @Test
-    public void shouldParseHuQuery() throws Exception{
+    public void shouldPreserveMultiFacetFieldParams() throws Exception{
+	String content = Files.toString(new File("src/test/resources/huge-query.txt"), Charset.defaultCharset());
+	Assert.assertNotNull(content);
+	SmartQuery smartQuery = SolrQueryBuilder.fromRawQuery(content);
+	Assert.assertNotNull(smartQuery);
+	Assert.assertTrue(smartQuery.info().getFacetFields().size()==654);
+	System.out.println(smartQuery.build());
+    }
+    
+    @Test
+    public void shouldParseHugeQuery() throws Exception{
 	String content = Files.toString(new File("src/test/resources/huge-query.txt"), Charset.defaultCharset());
 	Assert.assertNotNull(content);
 	SmartQuery smartQuery = SolrQueryBuilder.fromRawQuery(content);

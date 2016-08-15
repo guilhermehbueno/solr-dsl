@@ -1,5 +1,8 @@
 package com.solr.dsl;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.StringUtils;
 
 import com.solr.dsl.scaffold.QueryScaffold;
@@ -16,8 +19,8 @@ class SecondSolrQuery implements BuilderToString {
         this.scaffold = scaffold;
     }
 
-    public String getFacetByField() {
-        return this.scaffold.getByName("facet.field").getValue();
+    public List<String> getFacetByField() {
+        return this.scaffold.getMultiByName("facet.field").stream().map(field -> field.toString()).collect(Collectors.toList());
     }
 
     public void setFacetByField(ScaffoldField facetByField) {
@@ -69,7 +72,15 @@ class SecondSolrQuery implements BuilderToString {
     @Override
     public String build() {
         StringBuilder sb = new StringBuilder();
-    	String facetByField = this.scaffold.getByName("facet.field") != null ? this.scaffold.getByName("facet.field").toString() : null;
+        
+        List<ScaffoldField> multiByName = this.scaffold.getMultiByName("facet.field");
+        List<String> collectMultiByName = multiByName.stream().map(field -> field.toString()).collect(Collectors.toList());
+    	String facetByField = null;
+    	if(collectMultiByName!= null && collectMultiByName.size()>0){
+    	    facetByField = StringUtils.join(collectMultiByName, "&");
+    	}
+    	
+    	
     	String facetByQuery = this.scaffold.getByName("facet.query") != null ? this.scaffold.getByName("facet.query").toString() : null;
     	String facetByPrefix = this.scaffold.getByName("facet.prefix") != null ? this.scaffold.getByName("facet.prefix").toString() : null;
     	String listBy = this.scaffold.getByName("fl") != null ? this.scaffold.getByName("fl").toString() : null;
@@ -113,5 +124,11 @@ class SecondSolrQuery implements BuilderToString {
     public ThirdCommandAggregation disableFacet() {
         this.enabledFacet=false;
         return null;
+    }
+
+    @Override
+    public String buildToJson() {
+	// TODO Auto-generated method stub
+	return null;
     }
 }

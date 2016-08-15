@@ -5,13 +5,16 @@ import static com.solr.dsl.scaffold.FieldBuilder.field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.NameValuePair;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import com.google.gson.Gson;
 import com.solr.dsl.raw.SolrQueryRawExtractor;
 import com.solr.dsl.scaffold.QueryScaffold;
 import com.solr.dsl.scaffold.ScaffoldField;
@@ -86,7 +89,7 @@ public class SolrQueryBuilder implements SmartQuery, QueryInfo {
 	}
 
 	@Override
-	public String getFacetFields() {
+	public List<String> getFacetFields() {
 		if (this.secondSolrQuery == null) {
 			return null;
 		}
@@ -146,7 +149,7 @@ public class SolrQueryBuilder implements SmartQuery, QueryInfo {
 		SQB.sortBy(SolrQueryRawExtractor.getSingleQueryParamValue(rawQuery, "sort"))
 		   		.boostBy(SolrQueryRawExtractor.getSingleQueryParamValue(rawQuery, "bq")).and()
 				.listBy(SolrQueryRawExtractor.getSingleQueryParamValue(rawQuery, "fl")).and()
-				.facetByField(SolrQueryRawExtractor.getSingleQueryParamValue(rawQuery, "facet.field"))
+				.facetByField(SolrQueryRawExtractor.getMultiQueryParamValue(rawQuery, "facet.field"))
 				.facetByQuery(SolrQueryRawExtractor.getSingleQueryParamValue(rawQuery, "facet.query"))
 				.facetByPrefix(SolrQueryRawExtractor.getSingleQueryParamValue(rawQuery, "facet.prefix"));
 		return SQB;
@@ -298,10 +301,32 @@ public class SolrQueryBuilder implements SmartQuery, QueryInfo {
 			}
 			return sb.toString();
 		}
+
+		@Override
+		public String buildToJson() {
+		    Map<String,String> map = new HashMap<>();
+		    this.scaffold.getFields().forEach(field -> map.put(field.getName(), field.getValue()));
+		    this.filters.forEach(field -> map.put(field.getName(), field.getValue()));
+		    this.boostQuery.forEach(field -> map.put(field.getName(), field.getValue()));
+		    
+		    if(map.containsKey("q")){
+			String query = map.get("q");
+			map.remove("q");
+			map.put("query", query);
+		    }
+
+		    Gson gson = new Gson();
+		    return gson.toJson(map, HashMap.class);
+		}
 	}
 
 	@Override
 	public <T> T getFieldValue(String fieldName) {
 	    return (T) this.scaffold.getValueByName(fieldName);
+	}
+
+	@Override
+	public String buildToJson() {
+	    return this.primarySolrQuery.buildToJson();
 	}
 }

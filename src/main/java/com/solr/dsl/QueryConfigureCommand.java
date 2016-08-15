@@ -2,6 +2,10 @@ package com.solr.dsl;
 
 import static com.solr.dsl.scaffold.FieldBuilder.field;
 
+import java.util.List;
+
+import org.apache.http.NameValuePair;
+
 import com.solr.dsl.SolrQueryBuilder.PrimarySolrQuery;
 import com.solr.dsl.views.SecondCommandAggregation;
 import com.solr.dsl.views.SmartQuery;
@@ -36,13 +40,20 @@ public class QueryConfigureCommand implements SecondCommandAggregation, ThirdCom
     public QueryInfo info() {
 	return goToInit().info();
     }
-
+    
     @Override
     public ThirdCommandAggregation facetByField(String command) {
+	 this.secondSolrQuery.setFacetByField(field("facet.field").value(command));
+	return this;
+    }
+
+    @Override
+    public ThirdCommandAggregation facetByField(List<NameValuePair> command) {
 	if (command == null) {
 	    return this;
 	}
-	this.secondSolrQuery.setFacetByField(field("facet.field").value(command));
+	
+	command.forEach(commandItem -> this.secondSolrQuery.setFacetByField(field("facet.field").value(commandItem.getValue())));
 	return this;
     }
 
@@ -89,5 +100,11 @@ public class QueryConfigureCommand implements SecondCommandAggregation, ThirdCom
     public ThirdCommandAggregation disableFacet() {
 	this.secondSolrQuery.disableFacet();
 	return this;
+    }
+
+    @Override
+    public String buildToJson() {
+	// TODO Auto-generated method stub
+	return null;
     }
 }

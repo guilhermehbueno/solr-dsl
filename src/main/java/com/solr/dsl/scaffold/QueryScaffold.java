@@ -28,6 +28,10 @@ public class QueryScaffold {
 		return result;
 	}
 	
+	public List<ScaffoldField> getMultiByName(String name){
+		return this.fields.stream().filter(field -> field.getName().equalsIgnoreCase(name)).collect(Collectors.toList());
+	}
+	
 	public String getValueByName(String name){
 		ScaffoldField  result = null;
 		for (ScaffoldField field : this.fields) {
@@ -45,5 +49,9 @@ public class QueryScaffold {
 		return field.getName()+"="+field.getValue();
 	    }).collect(Collectors.toList());
 	    return StringUtils.join(params, "&");
+	}
+	
+	public List<ScaffoldField> getFields() {
+	    return fields;
 	}
 }

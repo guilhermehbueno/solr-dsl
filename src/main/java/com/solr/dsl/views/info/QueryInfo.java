@@ -9,6 +9,6 @@ public interface QueryInfo {
 	public String getFieldList();
 	public List<String> getFilterQueries();
 	public String getFacetQueries();
-	public String getFacetFields();
+	public List<String> getFacetFields();
 	public String getFacetPrefixes();
 }
