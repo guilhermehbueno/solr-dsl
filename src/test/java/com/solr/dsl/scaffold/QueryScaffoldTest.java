@@ -2,10 +2,24 @@ package com.solr.dsl.scaffold;
 
 import static com.solr.dsl.scaffold.FieldBuilder.field;
 
+import java.util.List;
+
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class QueryScaffoldTest {
+    
+    	@Test
+    	public void shouldGetMultiFieldByName(){
+    	    QueryScaffold scaffold = new QueryScaffold();
+    	    scaffold.add(new ScaffoldField("facet.field", "1"));
+    	    scaffold.add(new ScaffoldField("facet.field", "2"));
+    	    scaffold.add(new ScaffoldField("facet.field", "3"));
+    	    
+    	    List<ScaffoldField> multiByName = scaffold.getMultiByName("facet.field");
+    	    Assert.assertEquals(3, multiByName.size());
+    	    System.out.println(scaffold.toString());
+    	}
 	
 	@Test
 	public void shouldBuildQueryScaffold(){

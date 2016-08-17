@@ -4,6 +4,7 @@ import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import com.solr.dsl.scaffold.ScaffoldField;
 import com.solr.dsl.views.SmartQuery;
 
 public class SolrQueryBuilderByRawQueryTest {
@@ -32,6 +33,15 @@ public class SolrQueryBuilderByRawQueryTest {
 		String queryResult = SolrQueryBuilder.fromRawQuery(query).build();
 		System.out.println(queryResult);
 		Assert.assertEquals(queryResult, query);
+	}
+	
+	@Test
+	public void shouldAddMMParam(){
+	    String query = "q=iphone&fq=name:teste&unack=true&guilherme=bueno";
+	    SmartQuery smartQuery = SolrQueryBuilder.fromRawQuery(query);
+	    smartQuery.change().upsertExtra(new ScaffoldField("mm", "100%"));
+	    String result = smartQuery.build();
+	    Assert.assertEquals(result, query+"&mm=100%");
 	}
 
 	@Test

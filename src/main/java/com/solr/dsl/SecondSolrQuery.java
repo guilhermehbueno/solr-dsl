@@ -22,6 +22,10 @@ class SecondSolrQuery implements BuilderToString {
     public List<String> getFacetByField() {
         return this.scaffold.getMultiByName("facet.field").stream().map(field -> field.toString()).collect(Collectors.toList());
     }
+    
+    public List<ScaffoldField> getFacetStructureByField() {
+        return this.scaffold.getMultiByName("facet.field");
+    }
 
     public void setFacetByField(ScaffoldField facetByField) {
         if (facetByField == null) {

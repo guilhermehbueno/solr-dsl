@@ -95,6 +95,14 @@ public class SolrQueryBuilder implements SmartQuery, QueryInfo {
 		}
 		return this.secondSolrQuery.getFacetByField();
 	}
+	
+	@Override
+	public List<ScaffoldField> getFacetFieldsStructure() {
+		if (this.secondSolrQuery == null) {
+			return null;
+		}
+		return this.secondSolrQuery.getFacetStructureByField();
+	}
 
 	@Override
 	public String getFacetPrefixes() {
@@ -212,6 +220,9 @@ public class SolrQueryBuilder implements SmartQuery, QueryInfo {
 				sb.append("&").append(pair.getName()+"="+pair.getValue());
 			}
 		}
+		
+		this.scaffold.getExtraFields().forEach(field -> sb.append("&").append(field.getName()+"="+field.getValue()));
+		
 		return sb.toString();
 	}
 
@@ -286,7 +297,7 @@ public class SolrQueryBuilder implements SmartQuery, QueryInfo {
 			
 			ScaffoldField query = this.scaffold.getByName("q");
 			ScaffoldField sortBy = this.scaffold.getByName("sort");
-
+			
 			sb.append(query);
 			if (StringUtils.isNotEmpty(fqs)) {
 				sb.append("&").append(fqs);

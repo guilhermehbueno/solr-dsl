@@ -22,9 +22,50 @@ public class ScaffoldField {
 		this.value = value;
 	}
 	
+	public boolean isNameValuePair(){
+	    return this.value.contains(":");
+	}
+	
+	public NameValuePair getNameValuePair(){
+	    return new NameValuePair(this);
+	}
+	
 	@Override
 	public String toString() {
 		return this.name+"="+this.value;
+	}
+	
+	public static class NameValuePair{
+	    
+	    private final ScaffoldField field;
+	    private String name;
+	    private String value;
+	    
+	    public NameValuePair(ScaffoldField field) {
+		super();
+		this.field = field;
+		String[] values = this.field.getValue().split(":");
+		this.name = values[0];
+		this.value = values[1];
+	    }
+
+	    public String getName() {
+	        return name;
+	    }
+
+	    public void setName(String name) {
+	        this.name = name;
+	        field.setValue(this.name+":"+this.value);
+	    }
+
+	    public String getValue() {
+	        return value;
+	    }
+
+	    public void setValue(String value) {
+	        this.value = value;
+	        field.setValue(this.name+":"+this.value);
+	    }
 	}
 	
 	@Override
