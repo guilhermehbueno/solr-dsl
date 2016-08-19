@@ -41,8 +41,11 @@ public class QueryScaffoldTest {
 	    QueryScaffold queryScaffold = new QueryScaffold();
 	    queryScaffold.add(field("q").value("iphone"));
 	    queryScaffold.add(field("fl").value("id,name"));
+	    queryScaffold.add(new ScaffoldField("facet.field", "1"));
+	    queryScaffold.add(new ScaffoldField("facet.field", "2"));
+	    queryScaffold.add(new ScaffoldField("facet.field", "3"));
 	    String query = queryScaffold.toString();
-	    Assert.assertEquals(query, "q=iphone&fl=id,name");
+	    Assert.assertEquals(query, "q=iphone&fl=id,name&facet.field=1&facet.field=2&facet.field=3");
 	    System.out.println(queryScaffold.buildToJson());
 	}
 }

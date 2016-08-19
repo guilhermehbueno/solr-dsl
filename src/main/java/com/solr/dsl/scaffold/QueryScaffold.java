@@ -151,14 +151,19 @@ public class QueryScaffold implements BuilderToString {
 	LOGGER.info("Invoking buildToJson(), values({})", StringUtils.join(new Object[] {}, ", "));
 	
 	Map<String, List<ScaffoldField>> groupedFields = fields .stream().collect(Collectors.groupingBy(field -> field.getName()));
-	Map<String, List<String>> params = new HashMap<String, List<String>>();
+	Map<String, Object> params = new HashMap<String, Object>();
 	
 	
 	LOGGER.debug("Grouped fields: {}", groupedFields.keySet());
 	
 	groupedFields.forEach((key, value) -> {
 	    List<String> values = value.stream().map(field -> field.getValue()).collect(Collectors.toList());
-	    params.put(key, values);
+	    if(values.size()==1){
+		params.put(key, values.get(0));
+	    }else{
+		params.put(key, values);
+	    }
+	    
 	});
 	
 	Map<String, Object> paramsWrapper = new HashMap<>();
