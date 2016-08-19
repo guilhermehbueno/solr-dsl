@@ -14,6 +14,19 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
+	<distributionManagement>
+		<snapshotRepository>
+			<id>artifactory</id>
+			<name>dfa10b2745f2-snapshots</name>
+			<url>http://qa.artifactory.marketplaceintegrator.com:8080/artifactory/libs-snapshot-local</url>
+		</snapshotRepository>
+		<repository>
+			<id>artifactory</id>
+			<name>dfa10b2745f2-releases</name>
+			<url>http://qa.artifactory.marketplaceintegrator.com:8080/artifactory/libs-release-local</url>
+		</repository>
+	</distributionManagement>
+
 	<dependencies>
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
