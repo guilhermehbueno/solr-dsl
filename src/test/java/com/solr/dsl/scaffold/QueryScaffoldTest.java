@@ -43,5 +43,6 @@ public class QueryScaffoldTest {
 	    queryScaffold.add(field("fl").value("id,name"));
 	    String query = queryScaffold.toString();
 	    Assert.assertEquals(query, "q=iphone&fl=id,name");
+	    System.out.println(queryScaffold.buildToJson());
 	}
 }

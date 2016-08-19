@@ -3,13 +3,16 @@ package com.solr.dsl.scaffold;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gson.Gson;
 import com.solr.dsl.scaffold.ScaffoldField.Group;
 import com.solr.dsl.views.build.BuilderToString;
 
@@ -141,6 +144,12 @@ public class QueryScaffold implements BuilderToString {
     @Override
     public String buildToJson() {
 	LOGGER.info("Invoking buildToJson(), values({})", StringUtils.join(new Object[] {}, ", "));
-	return null;
+	Map<String,String> map = new HashMap<>();
+	this.fields.forEach(field -> map.put(field.getName(), field.getValue()));
+	Map<String, Object> params = new HashMap<>();
+	params.put("params", map);
+
+	Gson gson = new Gson();
+	return gson.toJson(params, HashMap.class);
     }
 }
