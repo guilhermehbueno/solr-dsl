@@ -25,10 +25,7 @@ public class QueryConfigureCommand implements SecondCommandAggregation, ThirdCom
 
     @Override
     public String build() {
-	StringBuilder sb = new StringBuilder();
-	sb.append(this.primarySolrQuery.build());
-	sb.append(this.secondSolrQuery.build());
-	return sb.toString();
+	return this.secondSolrQuery.build();
     }
 
     @Override

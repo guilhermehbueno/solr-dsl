@@ -10,9 +10,11 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import com.solr.dsl.QueryBean;
+import com.solr.dsl.scaffold.ScaffoldField;
 
 public class SolrQueryRawExtractorTest {
 	
+    
 	@DataProvider(name="queries")
 	public Object[][] queriesProvider(){
 		return new Object[][] {
@@ -30,7 +32,7 @@ public class SolrQueryRawExtractorTest {
 	public void shouldExtractUnacknowledgeQueryParams(){
 	    String query = "unknow=abc&q=teste";
 	    List<String> fields = Arrays.asList("q");
-	    List<NameValuePair> params = SolrQueryRawExtractor.getUnacknowledgedQueryParams(fields, query);
+	    List<ScaffoldField> params = SolrQueryRawExtractor.getUnacknowledgedQueryParams(fields, query);
 	    Assert.assertNotNull(params);
 	    Assert.assertTrue(params.size()==1);
 	    Assert.assertEquals(params.get(0).getName(), "unknow");

@@ -29,7 +29,7 @@ public class SolrQueryBuilderByRawQueryTest {
 	
 	@Test
 	public void shouldPreserveUnacknowledgedQueryParams(){
-		String query = "q=iphone&fq=name:teste&unack=true&guilherme=bueno";
+		String query = "q=iphone&unack=true&guilherme=bueno&fq=name:teste";
 		String queryResult = SolrQueryBuilder.fromRawQuery(query).build();
 		System.out.println(queryResult);
 		Assert.assertEquals(queryResult, query);
@@ -37,9 +37,9 @@ public class SolrQueryBuilderByRawQueryTest {
 	
 	@Test
 	public void shouldAddMMParam(){
-	    String query = "q=iphone&fq=name:teste&unack=true&guilherme=bueno";
+	    String query = "q=iphone&unack=true&guilherme=bueno&fq=name:teste";
 	    SmartQuery smartQuery = SolrQueryBuilder.fromRawQuery(query);
-	    smartQuery.change().upsertExtra(new ScaffoldField("mm", "100%"));
+	    smartQuery.change().upsert(new ScaffoldField("mm", "100%"));
 	    String result = smartQuery.build();
 	    Assert.assertEquals(result, query+"&mm=100%");
 	}

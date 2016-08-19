@@ -16,14 +16,14 @@ public class SolrQueryBuilderTest {
 			{new QueryBean("q=iphone&fq=name:teste&fq=category:categoryName", SolrQueryBuilder.newQuery("iphone").filterBy("name:teste").filterBy("category:categoryName").build())},
 			{new QueryBean("q=iphone&fq=name:teste&sort=popularity", SolrQueryBuilder.newQuery("iphone").filterBy("name:teste").sortBy("popularity").build())},
 			{new QueryBean("q=iphone&fq=name:teste&sort=popularity&fl=id,name", SolrQueryBuilder.newQuery("iphone").filterBy("name:teste").sortBy("popularity").and().listBy("id,name").build())},
-			{new QueryBean("q=iphone&fq=name:teste&sort=popularity&facet=true&fl=id,name&facet.field=category", 
+			{new QueryBean("q=iphone&fq=name:teste&sort=popularity&fl=id,name&facet.field=category&facet=true", 
 				SolrQueryBuilder.newQuery("iphone")
 								.filterBy("name:teste")
 								.sortBy("popularity").and()
 								.listBy("id,name").and()
 								.facetByField("category")
 								.build())},
-			{new QueryBean("q=iphone&fq=name:teste&sort=popularity&facet=true&fl=id,name&facet.query=teste&facet.field=category", 
+			{new QueryBean("q=iphone&fq=name:teste&sort=popularity&fl=id,name&facet.field=category&facet=true&facet.query=teste", 
 				SolrQueryBuilder.newQuery("iphone")
 								.filterBy("name:teste")
 								.sortBy("popularity").and()
@@ -31,7 +31,7 @@ public class SolrQueryBuilderTest {
 								.facetByField("category")
 								.facetByQuery("teste")
 								.build())},
-			{new QueryBean("q=iphone&fq=name:teste&bq=skuIds:(12321^500 OR 221300^1000)&sort=popularity&facet=true&fl=id,name&facet.query=teste&facet.field=category", 
+			{new QueryBean("q=iphone&fq=name:teste&bq=skuIds:(12321^500 OR 221300^1000)&sort=popularity&fl=id,name&facet.field=category&facet=true&facet.query=teste", 
 				SolrQueryBuilder.newQuery("iphone")
 								.filterBy("name:teste")
 								.boostBy("skuIds:(12321^500 OR 221300^1000)")
@@ -59,7 +59,7 @@ public class SolrQueryBuilderTest {
 	@Test
 	public void shouldBuildQueryWithoutConfigurationFieldsAndWithFacetQuery(){
 		String query = SolrQueryBuilder.newQuery("iphone").and().and().facetByQuery("teste:teste").build();
-		Assert.assertEquals(query, "q=iphone&facet=true&facet.query=teste:teste");
+		Assert.assertEquals(query, "q=iphone&facet.query=teste:teste&facet=true");
 	}
 	
 	@Test
@@ -73,7 +73,7 @@ public class SolrQueryBuilderTest {
 	@Test
 	public void shouldToggleFacet(){
 	    String query = SolrQueryBuilder.newQuery("iphone").and().and().facetByField("name_text_pt").disableFacet().build();
-	    Assert.assertEquals(query, "q=iphone&facet=false&facet.field=name_text_pt");
+	    Assert.assertEquals(query, "q=iphone&facet.field=name_text_pt&facet=false");
 	}
 	
 	@Test

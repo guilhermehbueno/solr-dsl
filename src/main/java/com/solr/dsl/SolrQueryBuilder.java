@@ -18,6 +18,7 @@ import com.google.gson.Gson;
 import com.solr.dsl.raw.SolrQueryRawExtractor;
 import com.solr.dsl.scaffold.QueryScaffold;
 import com.solr.dsl.scaffold.ScaffoldField;
+import com.solr.dsl.scaffold.ScaffoldField.Group;
 import com.solr.dsl.views.QueryParamHandler;
 import com.solr.dsl.views.SecondCommandAggregation;
 import com.solr.dsl.views.SmartQuery;
@@ -27,10 +28,10 @@ import com.solr.dsl.views.info.QueryInfo;
 
 public class SolrQueryBuilder implements SmartQuery, QueryInfo {
 
-	private final QueryScaffold scaffold = new QueryScaffold();
-	private final SecondSolrQuery secondSolrQuery;
-	private final PrimarySolrQuery primarySolrQuery = new PrimarySolrQuery(scaffold);
-	private final QueryParamHandler queryParamHandler = new QueryParamHandlerImpl(scaffold, this);
+	private final QueryScaffold scaffold;
+	private SecondSolrQuery secondSolrQuery;
+	private PrimarySolrQuery primarySolrQuery;
+	private final QueryParamHandler queryParamHandler;
 	private static final List<String> recognizedQueryParams = new ArrayList<String>();
 
 	static {
@@ -45,28 +46,27 @@ public class SolrQueryBuilder implements SmartQuery, QueryInfo {
 		if(query == null){
 			query="*:*";
 		}
+		this.scaffold = new QueryScaffold();
+		this.primarySolrQuery = new PrimarySolrQuery(scaffold);
+		this.queryParamHandler = new QueryParamHandlerImpl(scaffold, this);
 		this.primarySolrQuery.setQuery(field("q").value(query));
 		this.secondSolrQuery = new SecondSolrQuery(this.scaffold);
 	}
 	
-	private SolrQueryBuilder(String query, List<NameValuePair> unacknowledgeFields) {
-		super();
-		if(query == null){
-			query="*:*";
-		}
+	private SolrQueryBuilder(String query, List<ScaffoldField> unacknowledgeFields) {
+		this(query);
 		this.primarySolrQuery.setQuery(field("q").value(query));
 		this.primarySolrQuery.addAllUnacknowledgeFields(unacknowledgeFields);
 		this.secondSolrQuery = new SecondSolrQuery(this.scaffold);
 	}
 
-	SolrQueryBuilder(PrimarySolrQuery primarySolrQuery, SecondSolrQuery secondSolrQuery) {
-		super();
-		this.scaffold.add(field("q").value(primarySolrQuery.getQuery()));
-		this.primarySolrQuery.setQuery(primarySolrQuery.getQueryScaffoldField());
-		this.primarySolrQuery.setSortBy(primarySolrQuery.getSortByScaffoldField());
-		this.primarySolrQuery.addAllFilters(primarySolrQuery.getFilters());
-		this.primarySolrQuery.addAllUnacknowledgeFields(primarySolrQuery.unacknowledgeFields);
+	SolrQueryBuilder(PrimarySolrQuery primarySolrQuery, SecondSolrQuery secondSolrQuery){
+	    	this.scaffold = primarySolrQuery.getScaffold();
+	    	this.queryParamHandler = new QueryParamHandlerImpl(scaffold, this);
+		this.primarySolrQuery = primarySolrQuery;
 		this.secondSolrQuery = secondSolrQuery;
+		this.primarySolrQuery.build();
+		this.secondSolrQuery.build();
 	}
 
 	public PrimarySolrQuery getPrimarySolrQuery() {
@@ -145,7 +145,7 @@ public class SolrQueryBuilder implements SmartQuery, QueryInfo {
 
 	public static SmartQuery fromRawQuery(String rawQuery) {
 		String query = SolrQueryRawExtractor.getSingleQueryParamValue(rawQuery,	"q");
-		List<NameValuePair> unacknowledgedQueryParams = SolrQueryRawExtractor.getUnacknowledgedQueryParams(recognizedQueryParams, rawQuery);
+		List<ScaffoldField> unacknowledgedQueryParams = SolrQueryRawExtractor.getUnacknowledgedQueryParams(recognizedQueryParams, rawQuery);
 		SmartQuery SQB = new SolrQueryBuilder(query, unacknowledgedQueryParams);
 		
 		List<NameValuePair> paramValues = SolrQueryRawExtractor.getMultiQueryParamValue(rawQuery, "fq");
@@ -209,67 +209,58 @@ public class SolrQueryBuilder implements SmartQuery, QueryInfo {
 
 	@Override
 	public String build() {
-		StringBuilder sb = new StringBuilder();
-		sb.append(this.primarySolrQuery.build());
-		if (this.secondSolrQuery != null) {
-			sb.append(this.secondSolrQuery.build());
-		}
-		
-		for (NameValuePair pair : this.primarySolrQuery.getUnacknowledgeFields()) {
-			if(pair!=null){
-				sb.append("&").append(pair.getName()+"="+pair.getValue());
-			}
-		}
-		
-		this.scaffold.getExtraFields().forEach(field -> sb.append("&").append(field.getName()+"="+field.getValue()));
-		
-		return sb.toString();
+		return this.scaffold.build();
 	}
 
 	static class PrimarySolrQuery implements BuilderToString {
 
-		private final QueryScaffold scaffold;
-		private final List<ScaffoldField> filters = new ArrayList<ScaffoldField>();
-		private final List<ScaffoldField> boostQuery = new ArrayList<ScaffoldField>();
-		private final List<NameValuePair> unacknowledgeFields = new ArrayList<NameValuePair>();
+		private QueryScaffold scaffold;
+		
+		public QueryScaffold getScaffold() {
+		    return scaffold;
+		}
 		
 		public PrimarySolrQuery(QueryScaffold scaffold) {
 			super();
 			this.scaffold = scaffold;
 		}
+		
+		public void setScaffold(QueryScaffold scaffold) {
+		    this.scaffold = scaffold;
+		}
 
 		public boolean addBoostQuery(ScaffoldField field) {
-			return boostQuery.add(field);
+		    	field.setGroup(new Group("bq"));
+			return scaffold.add(field);
 		}
 
 		public boolean addAllBoostQuery(Collection<? extends ScaffoldField> c) {
-			return boostQuery.addAll(c);
+			return scaffold.addAll(new Group("bq"), c);
 		}
 
 		public boolean addFilter(ScaffoldField fq) {
-			return filters.add(fq);
+		    	fq.setGroup(new Group("fq"));
+			return scaffold.add(fq);
 		}
 
 		public boolean addAllFilters(Collection<? extends ScaffoldField> c) {
-			return filters.addAll(c);
+			return scaffold.addAll(new Group("fq"), c);
 		}
 		
-		public boolean addAllUnacknowledgeFields(Collection<? extends NameValuePair> fields) {
-		    	fields.forEach(field -> this.scaffold.add(new ScaffoldField(field.getName(), field.getValue())));
-			return unacknowledgeFields.addAll(fields);
+		public boolean addAllUnacknowledgeFields(Collection<? extends ScaffoldField> fields) {
+		    	Group group = new Group("unack");
+		    	fields.forEach(field -> this.scaffold.add(new ScaffoldField(field.getName(), field.getValue(), group)));
+			return true;
 		}
 
 		public String getQuery() {
 			return this.scaffold.getValueByName("q");
 		}
 		
-		public ScaffoldField getQueryScaffoldField() {
-			ScaffoldField field = this.scaffold.getByName("q");
-			return field;
-		}
-
 		public void setQuery(ScaffoldField query) {
-			this.scaffold.add(query);
+		    	Group group = new Group("query");
+		    	query.setGroup(group);
+			this.scaffold.change(query);
 		}
 
 		public ScaffoldField getSortByScaffoldField() {
@@ -278,59 +269,38 @@ public class SolrQueryBuilder implements SmartQuery, QueryInfo {
 		}
 
 		public void setSortBy(ScaffoldField sortBy) {
-			this.scaffold.add(sortBy);
+		    	if(this.scaffold.hasField("sort")){
+		    	    this.scaffold.change("sort", sortBy.getValue());
+		    	}else{
+        		    Group group = new Group("sort");
+        		    sortBy.setGroup(group);
+        		    this.scaffold.add(sortBy);
+		    	}
 		}
 
 		public List<ScaffoldField> getFilters() {
-			return filters;
+			return this.scaffold.getByGroupName("fq");
 		}
 		
-		public List<NameValuePair> getUnacknowledgeFields() {
-			return unacknowledgeFields;
+		public List<ScaffoldField> getUnacknowledgeFields() {
+			return this.scaffold.getByGroupName("unack");
+		}
+		
+		List<ScaffoldField> getBoostQuery(){
+		    return this.scaffold.getByGroupName("bq");
 		}
 		
 		@Override
 		public String build() {
-			String fqs = StringUtils.join(this.filters, "&");
-			String bqs = StringUtils.join(this.boostQuery, "&");
-			StringBuilder sb = new StringBuilder();
-			
-			ScaffoldField query = this.scaffold.getByName("q");
-			ScaffoldField sortBy = this.scaffold.getByName("sort");
-			
-			sb.append(query);
-			if (StringUtils.isNotEmpty(fqs)) {
-				sb.append("&").append(fqs);
-			}
-
-			if (StringUtils.isNotEmpty(bqs)) {
-				sb.append("&").append(bqs);
-			}
-
-			if (sortBy!=null && StringUtils.isNotEmpty(sortBy.toString())) {
-				sb.append("&").append(sortBy);
-			}
-			return sb.toString();
+			return scaffold.build();
 		}
 
 		@Override
 		public String buildToJson() {
 		    Map<String,String> map = new HashMap<>();
 		    this.scaffold.getFields().forEach(field -> map.put(field.getName(), field.getValue()));
-		    this.filters.forEach(field -> map.put(field.getName(), field.getValue()));
-		    this.boostQuery.forEach(field -> map.put(field.getName(), field.getValue()));
-		    
-//		    Map<String,String> translateMap = new HashMap<>();
-//		    translateMap.put("q", "query");
-//		    translateMap.put("fq", "filter");
-//		    translateMap.put("q", "query");
-//		    translateMap.put("q", "query");
-//		    
-//		    if(map.containsKey("q")){
-//			String query = map.get("q");
-//			map.remove("q");
-//			map.put("query", query);
-//		    }
+		    this.getFilters().forEach(field -> map.put(field.getName(), field.getValue()));
+		    this.getBoostQuery().forEach(field -> map.put(field.getName(), field.getValue()));
 		    
 		    Map<String, Object> params = new HashMap<>();
 		    params.put("params", map);
