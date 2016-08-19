@@ -320,14 +320,23 @@ public class SolrQueryBuilder implements SmartQuery, QueryInfo {
 		    this.filters.forEach(field -> map.put(field.getName(), field.getValue()));
 		    this.boostQuery.forEach(field -> map.put(field.getName(), field.getValue()));
 		    
-		    if(map.containsKey("q")){
-			String query = map.get("q");
-			map.remove("q");
-			map.put("query", query);
-		    }
+//		    Map<String,String> translateMap = new HashMap<>();
+//		    translateMap.put("q", "query");
+//		    translateMap.put("fq", "filter");
+//		    translateMap.put("q", "query");
+//		    translateMap.put("q", "query");
+//		    
+//		    if(map.containsKey("q")){
+//			String query = map.get("q");
+//			map.remove("q");
+//			map.put("query", query);
+//		    }
+		    
+		    Map<String, Object> params = new HashMap<>();
+		    params.put("params", map);
 
 		    Gson gson = new Gson();
-		    return gson.toJson(map, HashMap.class);
+		    return gson.toJson(params, HashMap.class);
 		}
 	}
 
