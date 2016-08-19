@@ -144,12 +144,20 @@ public class QueryScaffold implements BuilderToString {
     @Override
     public String buildToJson() {
 	LOGGER.info("Invoking buildToJson(), values({})", StringUtils.join(new Object[] {}, ", "));
-	Map<String,String> map = new HashMap<>();
-	this.fields.forEach(field -> map.put(field.getName(), field.getValue()));
-	Map<String, Object> params = new HashMap<>();
-	params.put("params", map);
+	
+	Map<String, List<ScaffoldField>> groupedFields = fields .stream().collect(Collectors.groupingBy(field -> field.getName()));
+	Map<String, List<String>> params = new HashMap<String, List<String>>();
+	
+	groupedFields.forEach((key, value) -> {
+	    List<String> values = value.stream().map(field -> field.getValue()).collect(Collectors.toList());
+	    params.put(key, values);
+	});
+	
+	Map<String, Object> paramsWrapper = new HashMap<>();
+	paramsWrapper.put("params", params);
 
 	Gson gson = new Gson();
-	return gson.toJson(params, HashMap.class);
+	String result = gson.toJson(paramsWrapper, HashMap.class);
+	return result;
     }
 }
