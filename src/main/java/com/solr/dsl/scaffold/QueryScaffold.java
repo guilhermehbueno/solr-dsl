@@ -16,6 +16,11 @@ import com.google.gson.Gson;
 import com.solr.dsl.scaffold.ScaffoldField.Group;
 import com.solr.dsl.views.build.BuilderToString;
 
+/**
+ * The most important class
+ * @author guilhermehbueno
+ *
+ */
 public class QueryScaffold implements BuilderToString {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(QueryScaffold.class);
@@ -147,6 +152,9 @@ public class QueryScaffold implements BuilderToString {
 	
 	Map<String, List<ScaffoldField>> groupedFields = fields .stream().collect(Collectors.groupingBy(field -> field.getName()));
 	Map<String, List<String>> params = new HashMap<String, List<String>>();
+	
+	
+	LOGGER.debug("Grouped fields: {}", groupedFields.keySet());
 	
 	groupedFields.forEach((key, value) -> {
 	    List<String> values = value.stream().map(field -> field.getValue()).collect(Collectors.toList());

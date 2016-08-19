@@ -33,5 +33,6 @@ public class SolrHugeQueryParserTest {
 	System.out.println(smartQuery.info().getQuery());
 	smartQuery.change().add(new ScaffoldField("q", smartQuery.info().getFieldValue("spellcheck.q")));
 	System.out.println(smartQuery.info().getQuery());
+	System.out.println(smartQuery.buildToJson());
     }
 }

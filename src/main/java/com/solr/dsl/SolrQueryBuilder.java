@@ -5,16 +5,13 @@ import static com.solr.dsl.scaffold.FieldBuilder.field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.NameValuePair;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import com.google.gson.Gson;
 import com.solr.dsl.raw.SolrQueryRawExtractor;
 import com.solr.dsl.scaffold.QueryScaffold;
 import com.solr.dsl.scaffold.ScaffoldField;
@@ -297,16 +294,7 @@ public class SolrQueryBuilder implements SmartQuery, QueryInfo {
 
 		@Override
 		public String buildToJson() {
-		    Map<String,String> map = new HashMap<>();
-		    this.scaffold.getFields().forEach(field -> map.put(field.getName(), field.getValue()));
-		    this.getFilters().forEach(field -> map.put(field.getName(), field.getValue()));
-		    this.getBoostQuery().forEach(field -> map.put(field.getName(), field.getValue()));
-		    
-		    Map<String, Object> params = new HashMap<>();
-		    params.put("params", map);
-
-		    Gson gson = new Gson();
-		    return gson.toJson(params, HashMap.class);
+		    return this.scaffold.buildToJson();
 		}
 	}
 
