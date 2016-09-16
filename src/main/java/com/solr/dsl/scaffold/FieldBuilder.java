@@ -19,7 +19,7 @@ public class FieldBuilder {
 		}
 		
 		public ScaffoldField value(String value){
-			return new ScaffoldField(this.fieldName, value); 
+			return new ScaffoldField(this.fieldName, value, ""); 
 		}
 	}
 }

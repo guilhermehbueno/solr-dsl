@@ -12,9 +12,9 @@ public class QueryScaffoldTest {
     	@Test
     	public void shouldGetMultiFieldByName(){
     	    QueryScaffold scaffold = new QueryScaffold();
-    	    scaffold.add(new ScaffoldField("facet.field", "1"));
-    	    scaffold.add(new ScaffoldField("facet.field", "2"));
-    	    scaffold.add(new ScaffoldField("facet.field", "3"));
+    	    scaffold.add(new ScaffoldField("facet.field", "1", null));
+    	    scaffold.add(new ScaffoldField("facet.field", "2", null));
+    	    scaffold.add(new ScaffoldField("facet.field", "3", null));
     	    
     	    List<ScaffoldField> multiByName = scaffold.getMultiByName("facet.field");
     	    Assert.assertEquals(3, multiByName.size());
@@ -41,9 +41,9 @@ public class QueryScaffoldTest {
 	    QueryScaffold queryScaffold = new QueryScaffold();
 	    queryScaffold.add(field("q").value("iphone"));
 	    queryScaffold.add(field("fl").value("id,name"));
-	    queryScaffold.add(new ScaffoldField("facet.field", "1"));
-	    queryScaffold.add(new ScaffoldField("facet.field", "2"));
-	    queryScaffold.add(new ScaffoldField("facet.field", "3"));
+	    queryScaffold.add(new ScaffoldField("facet.field", "1", null));
+	    queryScaffold.add(new ScaffoldField("facet.field", "2", null));
+	    queryScaffold.add(new ScaffoldField("facet.field", "3", null));
 	    String query = queryScaffold.toString();
 	    Assert.assertEquals(query, "q=iphone&fl=id,name&facet.field=1&facet.field=2&facet.field=3");
 	    System.out.println(queryScaffold.buildToJson());

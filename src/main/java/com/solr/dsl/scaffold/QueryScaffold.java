@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
-import com.solr.dsl.scaffold.ScaffoldField.Group;
 import com.solr.dsl.views.build.BuilderToString;
 
 /**
@@ -31,6 +30,7 @@ public class QueryScaffold implements BuilderToString {
 	return this.fields.stream().filter(field -> field.getName().contains("facet")).count() > 0;
     }
 
+    
     public boolean isFacetDisabled() {
 	LOGGER.debug("Invoking isFacetDisabled(), values({})", StringUtils.join(new Object[] {}, ", "));
 	
@@ -52,7 +52,7 @@ public class QueryScaffold implements BuilderToString {
 	
 	ScaffoldField field = getByName(name);
 	if(field == null){
-	    field =  new ScaffoldField(name, value);
+	    field =  new ScaffoldField(name, value, name);
 	    fields.add(field);
 	}else{
 	    field.setValue(value);
@@ -134,7 +134,7 @@ public class QueryScaffold implements BuilderToString {
 	return Collections.unmodifiableList(fields);
     }
 
-    public boolean addAll(Group group, Collection<? extends ScaffoldField> collection) {
+    public boolean addAll(String group, Collection<? extends ScaffoldField> collection) {
 	LOGGER.debug("Invoking addAll(group, collection), values({})", StringUtils.join(new Object[] { group, collection }, ", "));
 	this.fields.forEach(field -> field.setGroup(group));
 	return this.fields.addAll(collection);
@@ -144,7 +144,7 @@ public class QueryScaffold implements BuilderToString {
 	LOGGER.debug("Invoking getByGroupName(groupName), values({})", StringUtils.join(new Object[] { groupName }, ", "));
 	if (groupName == null)
 	    return null;
-	return this.fields.stream().filter(field -> groupName != null && groupName.equalsIgnoreCase(field.getGroup().getName())).collect(Collectors.toList());
+	return this.fields.stream().filter(field -> groupName != null && groupName.equalsIgnoreCase(field.getGroup())).collect(Collectors.toList());
     }
 
     @Override

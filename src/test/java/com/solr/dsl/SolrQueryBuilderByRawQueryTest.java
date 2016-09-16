@@ -39,7 +39,7 @@ public class SolrQueryBuilderByRawQueryTest {
 	public void shouldAddMMParam(){
 	    String query = "q=iphone&unack=true&guilherme=bueno&fq=name:teste";
 	    SmartQuery smartQuery = SolrQueryBuilder.fromRawQuery(query);
-	    smartQuery.change().upsert(new ScaffoldField("mm", "100%"));
+	    smartQuery.change().upsert(new ScaffoldField("mm", "100%", null));
 	    String result = smartQuery.build();
 	    Assert.assertEquals(result, query+"&mm=100%");
 	}

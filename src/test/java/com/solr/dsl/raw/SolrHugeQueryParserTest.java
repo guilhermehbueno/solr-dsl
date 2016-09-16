@@ -31,7 +31,7 @@ public class SolrHugeQueryParserTest {
 	Assert.assertNotNull(smartQuery);
 	Assert.assertNotNull(smartQuery.info().getQuery());
 	System.out.println(smartQuery.info().getQuery());
-	smartQuery.change().add(new ScaffoldField("q", smartQuery.info().getFieldValue("spellcheck.q")));
+	smartQuery.change().add(new ScaffoldField("q", smartQuery.info().getFieldValue("spellcheck.q"), null));
 	System.out.println(smartQuery.info().getQuery());
 	System.out.println(smartQuery.buildToJson());
     }

@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 
 import com.solr.dsl.scaffold.QueryScaffold;
 import com.solr.dsl.scaffold.ScaffoldField;
-import com.solr.dsl.scaffold.ScaffoldField.Group;
 import com.solr.dsl.views.ThirdCommandAggregation;
 import com.solr.dsl.views.build.BuilderToString;
 
@@ -67,7 +66,7 @@ class SecondSolrQuery implements BuilderToString {
     	return;
         }
         
-        listBy.setGroup(new Group("fl"));
+        listBy.setGroup("fl");
         scaffold.add(listBy);
     }
 

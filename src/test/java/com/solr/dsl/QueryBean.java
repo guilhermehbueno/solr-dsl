@@ -18,6 +18,7 @@ public class QueryBean {
 		return generatedQuery;
 	}
 
+	
 	@Override
 	public String toString() {
 		return "QueryBean [expectedQuery=" + expectedQuery + ", generatedQuery=" + generatedQuery + "]";

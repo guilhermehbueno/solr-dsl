@@ -1,51 +1,23 @@
 package com.solr.dsl.scaffold;
 
-public class ScaffoldField {
-    
-    	public static class Group{
-    	    private String name = "default";
-    	    
-	    public Group() {
-		super();
-	    }
-
-	    public Group(String name) {
-		super();
-		this.name = name;
-	    }
-
-	    public String getName() {
-	        return name;
-	    }
-
-	    public void setName(String name) {
-	        this.name = name;
-	    }
-    	}
+public final class ScaffoldField {
     
 	private String name;
 	private String value;
-	private Group group;
+	private String group;
 	
-	public ScaffoldField(String name, String value) {
+	public ScaffoldField(String name, String value, String groupName) {
 		super();
 		this.name = name;
 		this.value = value;
-		this.group = new Group();
+		this.group = groupName;
 	}
 	
-	public ScaffoldField(String name, String value, Group group) {
-		super();
-		this.name = name;
-		this.value = value;
-		this.group = group;
-	}
-	
-	public Group getGroup() {
-	    return group;
+	public String getGroup() {
+	    return this.group;
 	}
 
-	public void setGroup(Group group) {
+	public void setGroup(String group) {
 	    this.group = group;
 	}
 

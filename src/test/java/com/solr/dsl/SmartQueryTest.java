@@ -34,7 +34,7 @@ public class SmartQueryTest {
     public void shouldChangeQuery(){
 	SmartQuery smartQuery = SolrQueryBuilder.fromRawQuery("q=ok");
 	Assert.assertEquals(smartQuery.info().getQuery(), "ok");
-	smartQuery.change().update(new ScaffoldField("q", "hello"));
+	smartQuery.change().update(new ScaffoldField("q", "hello", null));
 	Assert.assertEquals(smartQuery.info().getQuery(), "hello");
     }
 
@@ -50,12 +50,12 @@ public class SmartQueryTest {
     @Test
     public void shouldGroupParamsByName() {
 	List<ScaffoldField> fields = new ArrayList<>();
-	fields.add(new ScaffoldField("facet.field", "1"));
-	fields.add(new ScaffoldField("facet.field", "2"));
-	fields.add(new ScaffoldField("facet.field", "3"));
+	fields.add(new ScaffoldField("facet.field", "1", null));
+	fields.add(new ScaffoldField("facet.field", "2", null));
+	fields.add(new ScaffoldField("facet.field", "3", null));
 
 	Map<String, List<ScaffoldField>> groupedFields = fields.stream().collect(Collectors.groupingBy(field -> field.getName()));
-	Map<String, List<String>> params = new HashMap<String, List<String>>();
+	Map<String, List<String>> params = new HashMap<>();
 
 	groupedFields.forEach((key, value) -> {
 	    List<String> values = value.stream().map(field -> field.getValue()).collect(Collectors.toList());

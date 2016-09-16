@@ -15,7 +15,6 @@ import com.google.common.collect.Lists;
 import com.solr.dsl.raw.SolrQueryRawExtractor;
 import com.solr.dsl.scaffold.QueryScaffold;
 import com.solr.dsl.scaffold.ScaffoldField;
-import com.solr.dsl.scaffold.ScaffoldField.Group;
 import com.solr.dsl.views.QueryParamHandler;
 import com.solr.dsl.views.SecondCommandAggregation;
 import com.solr.dsl.views.SmartQuery;
@@ -227,26 +226,26 @@ public class SolrQueryBuilder implements SmartQuery, QueryInfo {
 		}
 
 		public boolean addBoostQuery(ScaffoldField field) {
-		    	field.setGroup(new Group("bq"));
+		    	field.setGroup("bq");
 			return scaffold.add(field);
 		}
 
 		public boolean addAllBoostQuery(Collection<? extends ScaffoldField> c) {
-			return scaffold.addAll(new Group("bq"), c);
+			return scaffold.addAll("bq", c);
 		}
 
 		public boolean addFilter(ScaffoldField fq) {
-		    	fq.setGroup(new Group("fq"));
+		    	fq.setGroup("fq");
 			return scaffold.add(fq);
 		}
 
 		public boolean addAllFilters(Collection<? extends ScaffoldField> c) {
-			return scaffold.addAll(new Group("fq"), c);
+			return scaffold.addAll("fq", c);
 		}
 		
 		public boolean addAllUnacknowledgeFields(Collection<? extends ScaffoldField> fields) {
-		    	Group group = new Group("unack");
-		    	fields.forEach(field -> this.scaffold.add(new ScaffoldField(field.getName(), field.getValue(), group)));
+		    	String group = "unack";
+		    	fields.forEach(field -> this.scaffold.add(new ScaffoldField(field.getName(), field.getValue(), null)));
 			return true;
 		}
 
@@ -255,7 +254,7 @@ public class SolrQueryBuilder implements SmartQuery, QueryInfo {
 		}
 		
 		public void setQuery(ScaffoldField query) {
-		    	Group group = new Group("query");
+		    	String group = "query";
 		    	query.setGroup(group);
 			this.scaffold.change(query);
 		}
@@ -269,7 +268,7 @@ public class SolrQueryBuilder implements SmartQuery, QueryInfo {
 		    	if(this.scaffold.hasField("sort")){
 		    	    this.scaffold.change("sort", sortBy.getValue());
 		    	}else{
-        		    Group group = new Group("sort");
+        		    String group = "sort";
         		    sortBy.setGroup(group);
         		    this.scaffold.add(sortBy);
 		    	}
