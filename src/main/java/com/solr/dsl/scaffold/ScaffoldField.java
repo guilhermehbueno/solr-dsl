@@ -13,6 +13,12 @@ public final class ScaffoldField {
 		this.group = groupName;
 	}
 	
+	public ScaffoldField(String name, String value) {
+		super();
+		this.name = name;
+		this.value = value;
+	}
+	
 	public String getGroup() {
 	    return this.group;
 	}
