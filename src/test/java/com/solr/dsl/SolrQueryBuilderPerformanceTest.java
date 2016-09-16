@@ -21,10 +21,9 @@ public class SolrQueryBuilderPerformanceTest {
 	
     }
     
-    
     @Test
     public void queryParseTime(){
-	int queryCount = 100;
+	int queryCount = 1000;
 	Stopwatch start = Stopwatch.createStarted();
 	for (int i = 0; i < queryCount; i++) {
 	    Assert.assertNotNull(content);
