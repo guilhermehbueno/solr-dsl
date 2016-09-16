@@ -18,8 +18,8 @@ public class SolrQueryRawExtractorTest {
 	@DataProvider(name="queries")
 	public Object[][] queriesProvider(){
 		return new Object[][] {
-				{new QueryBean("iphone", SolrQueryRawExtractor.getSingleQueryParamValue("q=iphone", "q"))},
-				{new QueryBean("iphone", SolrQueryRawExtractor.getSingleQueryParamValue("facet.query=iphone", "facet.query"))},
+				{new QueryBean("iphone", SolrQueryRawExtractor.getSingleQueryParamValue("q", SolrQueryRawExtractor.parseQueryString("q=iphone")))},
+				{new QueryBean("iphone", SolrQueryRawExtractor.getSingleQueryParamValue("facet.query", SolrQueryRawExtractor.parseQueryString("facet.query=iphone")))},
 		};
 	}
 	
@@ -32,7 +32,7 @@ public class SolrQueryRawExtractorTest {
 	public void shouldExtractUnacknowledgeQueryParams(){
 	    String query = "unknow=abc&q=teste";
 	    List<String> fields = Arrays.asList("q");
-	    List<ScaffoldField> params = SolrQueryRawExtractor.getUnacknowledgedQueryParams(fields, query);
+	    List<ScaffoldField> params = SolrQueryRawExtractor.getUnacknowledgedQueryParams(fields, SolrQueryRawExtractor.parseQueryString(query));
 	    Assert.assertNotNull(params);
 	    Assert.assertTrue(params.size()==1);
 	    Assert.assertEquals(params.get(0).getName(), "unknow");
@@ -41,7 +41,7 @@ public class SolrQueryRawExtractorTest {
 	
 	@Test
 	public void shouldExtractMultiQueryParamProperly(){
-		List<NameValuePair> values = SolrQueryRawExtractor.getMultiQueryParamValue("q=teste&fq=teste:1&fq=category:nome", "fq");
+		List<NameValuePair> values = SolrQueryRawExtractor.getMultiQueryParamValue("fq", SolrQueryRawExtractor.parseQueryString("q=teste&fq=teste:1&fq=category:nome"));
 		Assert.assertNotNull(values);
 		Assert.assertTrue(values.size()==2);
 	}

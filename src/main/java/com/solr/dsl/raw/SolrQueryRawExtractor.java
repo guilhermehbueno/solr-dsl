@@ -12,34 +12,36 @@ import com.solr.dsl.scaffold.ScaffoldField;
 
 public class SolrQueryRawExtractor {
 	
-	public static String getQuery(String queryString){
-		return getSingleQueryParamValue(queryString, "q");
+	public static String getQuery(List<NameValuePair> pairs){
+		return getSingleQueryParamValue("q", pairs);
 	}
 	
-	public static List<NameValuePair> getFilterQueries(String queryString){
-		return getMultiQueryParamValue(queryString, "fq");
+	public static List<NameValuePair> getFilterQueries(List<NameValuePair> pairs){
+		return getMultiQueryParamValue("fq", pairs);
 	}
 	
-	public static List<ScaffoldField> getUnacknowledgedQueryParams(final List<String> fields, String queryString){
-		List<NameValuePair> parse = URLEncodedUtils.parse(queryString, Charset.defaultCharset());
-		return parse.stream().filter( field -> !fields.contains(field.getName())).map(field -> new ScaffoldField(field.getName(), field.getValue(), "")).collect(Collectors.toList());
+	public static List<NameValuePair> parseQueryString(String queryString) {
+	    List<NameValuePair> parse = URLEncodedUtils.parse(queryString, Charset.defaultCharset());
+	    return parse;
 	}
 	
-	public static String getSingleQueryParamValue(String queryString, String paramName){
-		List<NameValuePair> parse = URLEncodedUtils.parse(queryString, Charset.defaultCharset());
+	public static List<ScaffoldField> getUnacknowledgedQueryParams(final List<String> fields,List<NameValuePair> pairs){
+		return pairs.stream().filter( field -> !fields.contains(field.getName())).map(field -> new ScaffoldField(field.getName(), field.getValue(), "")).collect(Collectors.toList());
+	}
+	
+	public static String getSingleQueryParamValue(String paramName, List<NameValuePair> pairs){
 		String result=null;
-		for (NameValuePair nameValuePair : parse) {
+		for (NameValuePair nameValuePair : pairs) {
 			if(nameValuePair.getName().equalsIgnoreCase(paramName)){
 				result=nameValuePair.getValue();
 			}
 		}
 		return result;
 	}
-	
-	public static List<NameValuePair> getMultiQueryParamValue(String queryString, String paramName){
-		List<NameValuePair> parse = URLEncodedUtils.parse(queryString, Charset.defaultCharset());
+
+	public static List<NameValuePair> getMultiQueryParamValue(String paramName, List<NameValuePair> pairs){
 		List<NameValuePair> results = new ArrayList<>();
-		for (NameValuePair nameValuePair : parse) {
+		for (NameValuePair nameValuePair : pairs) {
 			if(nameValuePair.getName().equalsIgnoreCase(paramName)){
 				results.add(nameValuePair);
 			}

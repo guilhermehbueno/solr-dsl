@@ -140,22 +140,23 @@ public class SolrQueryBuilder implements SmartQuery, QueryInfo {
 	}
 
 	public static SmartQuery fromRawQuery(String rawQuery) {
-		String query = SolrQueryRawExtractor.getSingleQueryParamValue(rawQuery,	"q");
-		List<ScaffoldField> unacknowledgedQueryParams = SolrQueryRawExtractor.getUnacknowledgedQueryParams(recognizedQueryParams, rawQuery);
+	    	List<NameValuePair> parsedQuery = SolrQueryRawExtractor.parseQueryString(rawQuery);
+		String query = SolrQueryRawExtractor.getSingleQueryParamValue("q", parsedQuery);
+		List<ScaffoldField> unacknowledgedQueryParams = SolrQueryRawExtractor.getUnacknowledgedQueryParams(recognizedQueryParams, parsedQuery);
 		SmartQuery SQB = new SolrQueryBuilder(query, unacknowledgedQueryParams);
 		
-		List<NameValuePair> paramValues = SolrQueryRawExtractor.getMultiQueryParamValue(rawQuery, "fq");
+		List<NameValuePair> paramValues = SolrQueryRawExtractor.getMultiQueryParamValue("fq", parsedQuery);
 		for (NameValuePair nameValuePair : paramValues) {
 			SQB.filterBy(nameValuePair.getValue());
 		}
 
 		//TODO: EXTRAIR FACET=TRUE
-		SQB.sortBy(SolrQueryRawExtractor.getSingleQueryParamValue(rawQuery, "sort"))
-		   		.boostBy(SolrQueryRawExtractor.getSingleQueryParamValue(rawQuery, "bq")).and()
-				.listBy(SolrQueryRawExtractor.getSingleQueryParamValue(rawQuery, "fl")).and()
-				.facetByField(SolrQueryRawExtractor.getMultiQueryParamValue(rawQuery, "facet.field"))
-				.facetByQuery(SolrQueryRawExtractor.getSingleQueryParamValue(rawQuery, "facet.query"))
-				.facetByPrefix(SolrQueryRawExtractor.getSingleQueryParamValue(rawQuery, "facet.prefix"));
+		SQB.sortBy(SolrQueryRawExtractor.getSingleQueryParamValue("sort", parsedQuery))
+		   		.boostBy(SolrQueryRawExtractor.getSingleQueryParamValue("bq", parsedQuery)).and()
+				.listBy(SolrQueryRawExtractor.getSingleQueryParamValue("fl", parsedQuery)).and()
+				.facetByField(SolrQueryRawExtractor.getMultiQueryParamValue("facet.field", parsedQuery))
+				.facetByQuery(SolrQueryRawExtractor.getSingleQueryParamValue("facet.query", parsedQuery))
+				.facetByPrefix(SolrQueryRawExtractor.getSingleQueryParamValue("facet.prefix", parsedQuery));
 		return SQB;
 	}
 
