@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.NameValuePair;
@@ -24,10 +25,10 @@ import com.solr.dsl.views.info.QueryInfo;
 
 public class SolrQueryBuilder implements SmartQuery, QueryInfo {
 
-	private QueryScaffold scaffold;
-	private SecondSolrQuery secondSolrQuery;
-	private PrimarySolrQuery primarySolrQuery;
-	private QueryParamHandler queryParamHandler;
+	private final QueryScaffold scaffold;
+	//private final SecondSolrQuery secondSolrQuery;
+	private final PrimarySolrQuery primarySolrQuery;
+	private final QueryParamHandler queryParamHandler;
 	private static final List<String> recognizedQueryParams = new ArrayList<>();
 
 	static {
@@ -46,23 +47,24 @@ public class SolrQueryBuilder implements SmartQuery, QueryInfo {
 		this.primarySolrQuery = new PrimarySolrQuery(scaffold);
 		this.queryParamHandler = new QueryParamHandlerImpl(scaffold, this);
 		this.primarySolrQuery.setQuery(field("q").value(query));
-		this.secondSolrQuery = new SecondSolrQuery(this.scaffold);
+		//this.secondSolrQuery = new SecondSolrQuery(this.scaffold);
 	}
 	
 	private SolrQueryBuilder(String query, List<ScaffoldField> unacknowledgeFields) {
 		this(query);
 		this.primarySolrQuery.setQuery(field("q").value(query));
 		this.primarySolrQuery.addAllUnacknowledgeFields(unacknowledgeFields);
-		this.secondSolrQuery = new SecondSolrQuery(this.scaffold);
+		//this.secondSolrQuery = new SecondSolrQuery(this.scaffold);
 	}
 
+	@Deprecated
 	SolrQueryBuilder(PrimarySolrQuery primarySolrQuery, SecondSolrQuery secondSolrQuery){
 	    	this.scaffold = primarySolrQuery.getScaffold();
 	    	this.queryParamHandler = new QueryParamHandlerImpl(scaffold, this);
 		this.primarySolrQuery = primarySolrQuery;
-		this.secondSolrQuery = secondSolrQuery;
+		//this.secondSolrQuery = secondSolrQuery;
 		this.primarySolrQuery.build();
-		this.secondSolrQuery.build();
+		//this.secondSolrQuery.build();
 	}
 
 	public PrimarySolrQuery getPrimarySolrQuery() {
@@ -81,36 +83,28 @@ public class SolrQueryBuilder implements SmartQuery, QueryInfo {
 
 	@Override
 	public String getFacetQueries() {
-		return this.secondSolrQuery.getFacetByQuery();
+	    return  this.scaffold.getByName("facet.query").toString();
 	}
 
 	@Override
 	public List<String> getFacetFields() {
-		if (this.secondSolrQuery == null) {
-			return null;
-		}
-		return this.secondSolrQuery.getFacetByField();
+	    return this.scaffold.getMultiByName("facet.field").stream().map(field -> field.toString()).collect(Collectors.toList());
 	}
 	
 	@Override
 	public List<ScaffoldField> getFacetFieldsStructure() {
-		if (this.secondSolrQuery == null) {
-			return null;
-		}
-		return this.secondSolrQuery.getFacetStructureByField();
+	    return this.scaffold.getMultiByName("facet.field");
 	}
 
 	@Override
 	public String getFacetPrefixes() {
-		if (this.secondSolrQuery == null) {
-			return null;
-		}
-		return this.secondSolrQuery.getFacetByPrefix();
+	    scaffold.change("facet", "true");
+	    return this.scaffold.getByName("facet.prefix").getValue();
 	}
 
 	@Override
 	public String getFieldList() {
-		return this.secondSolrQuery.getListBy();
+	    return this.scaffold.getByName("fl").toString();
 	}
 
 	@Override
@@ -199,9 +193,9 @@ public class SolrQueryBuilder implements SmartQuery, QueryInfo {
 	}
 
 	@Override
+	@Deprecated
 	public SecondCommandAggregation and() {
-		return new QueryConfigureCommand(this.primarySolrQuery,
-				this.secondSolrQuery);
+		return new QueryConfigureCommand(this.scaffold);
 	}
 
 	@Override
@@ -310,9 +304,9 @@ public class SolrQueryBuilder implements SmartQuery, QueryInfo {
 
 	@Override
 	public void flush() {
-	    this.scaffold = null;
-	    this.primarySolrQuery = null;
-	    this.queryParamHandler = null;
-	    this.secondSolrQuery = null;
+//	    this.scaffold = null;
+//	    this.primarySolrQuery = null;
+//	    this.queryParamHandler = null;
+//	    this.secondSolrQuery = null;
 	}
 }

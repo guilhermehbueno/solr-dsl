@@ -6,7 +6,8 @@ import java.util.List;
 
 import org.apache.http.NameValuePair;
 
-import com.solr.dsl.SolrQueryBuilder.PrimarySolrQuery;
+import com.solr.dsl.scaffold.QueryScaffold;
+import com.solr.dsl.scaffold.ScaffoldField;
 import com.solr.dsl.views.SecondCommandAggregation;
 import com.solr.dsl.views.SmartQuery;
 import com.solr.dsl.views.ThirdCommandAggregation;
@@ -14,18 +15,16 @@ import com.solr.dsl.views.info.QueryInfo;
 
 public class QueryConfigureCommand implements SecondCommandAggregation, ThirdCommandAggregation {
 
-    private final PrimarySolrQuery primarySolrQuery;
-    private final SecondSolrQuery secondSolrQuery;
+    private final QueryScaffold scaffold;
 
-    public QueryConfigureCommand(PrimarySolrQuery primarySolrQuery, SecondSolrQuery secondSolrQuery) {
+    public QueryConfigureCommand(QueryScaffold scaffold) {
 	super();
-	this.primarySolrQuery = primarySolrQuery;
-	this.secondSolrQuery = secondSolrQuery;
+	this.scaffold = scaffold;
     }
 
     @Override
     public String build() {
-	return this.secondSolrQuery.build();
+	return scaffold.build();
     }
 
     @Override
@@ -40,7 +39,8 @@ public class QueryConfigureCommand implements SecondCommandAggregation, ThirdCom
     
     @Override
     public ThirdCommandAggregation facetByField(String command) {
-	 this.secondSolrQuery.setFacetByField(field("facet.field").value(command));
+	scaffold.add(field("facet.field").value(command));
+	scaffold.change("facet", "true");
 	return this;
     }
 
@@ -50,7 +50,10 @@ public class QueryConfigureCommand implements SecondCommandAggregation, ThirdCom
 	    return this;
 	}
 	
-	command.forEach(commandItem -> this.secondSolrQuery.setFacetByField(field("facet.field").value(commandItem.getValue())));
+	command.forEach(commandItem -> {
+	    scaffold.add(field("facet.field").value(commandItem.getValue()));
+	    scaffold.change("facet", "true");  
+	});
 	return this;
     }
 
@@ -59,7 +62,9 @@ public class QueryConfigureCommand implements SecondCommandAggregation, ThirdCom
 	if (command == null) {
 	    return this;
 	}
-	this.secondSolrQuery.setFacetByQuery(field("facet.query").value(command));
+	
+	scaffold.add(field("facet.query").value(command));
+        scaffold.change("facet", "true");
 	return this;
     }
 
@@ -68,7 +73,9 @@ public class QueryConfigureCommand implements SecondCommandAggregation, ThirdCom
 	if (command == null) {
 	    return this;
 	}
-	this.secondSolrQuery.setFacetByPrefix(field("facet.prexy").value(command));
+	
+	scaffold.add(field("facet.prexy").value(command));
+        scaffold.change("facet", "true");
 	return this;
     }
 
@@ -78,24 +85,27 @@ public class QueryConfigureCommand implements SecondCommandAggregation, ThirdCom
 	    return this;
 	}
 
-	this.secondSolrQuery.setListBy(field("fl").value(fields));
+	ScaffoldField listBy = field("fl").value(fields);
+	listBy.setGroup("fl");
+        scaffold.add(listBy);
 	return this;
     }
 
     @Override
+    @Deprecated
     public SmartQuery goToInit() {
-	return new SolrQueryBuilder(this.primarySolrQuery, this.secondSolrQuery);
+	throw new UnsupportedOperationException("This method cannot be used. Reason: Performance!");
     }
 
     @Override
     public ThirdCommandAggregation enableFacet() {
-	this.secondSolrQuery.enableFacet();
+	scaffold.change("facet", "true");
 	return this;
     }
 
     @Override
     public ThirdCommandAggregation disableFacet() {
-	this.secondSolrQuery.disableFacet();
+	scaffold.change("facet", "false");
 	return this;
     }
 

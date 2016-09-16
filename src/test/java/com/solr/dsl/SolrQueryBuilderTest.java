@@ -62,12 +62,9 @@ public class SolrQueryBuilderTest {
 		Assert.assertEquals(query, "q=iphone&facet.query=teste:teste&facet=true");
 	}
 	
-	@Test
+	@Test(expectedExceptions=UnsupportedOperationException.class)
 	public void shouldGoToInit(){
 		String build = SolrQueryBuilder.newQuery("iphone").sortBy("popularidade").and().listBy("id,name").goToInit().sortBy("popularity").build();
-		System.out.println(build);
-		Assert.assertNotNull(build);
-		Assert.assertEquals(build, "q=iphone&sort=popularity&fl=id,name");
 	}
 	
 	@Test
