@@ -25,11 +25,11 @@ import com.solr.dsl.views.info.QueryInfo;
 
 public class SolrQueryBuilder implements SmartQuery, QueryInfo {
 
-	private final QueryScaffold scaffold;
+	private QueryScaffold scaffold;
 	private SecondSolrQuery secondSolrQuery;
 	private PrimarySolrQuery primarySolrQuery;
-	private final QueryParamHandler queryParamHandler;
-	private static final List<String> recognizedQueryParams = new ArrayList<String>();
+	private QueryParamHandler queryParamHandler;
+	private static final List<String> recognizedQueryParams = new ArrayList<>();
 
 	static {
 		String [] recoFields = new String[] { 
@@ -306,5 +306,13 @@ public class SolrQueryBuilder implements SmartQuery, QueryInfo {
 	@Override
 	public String buildToJson() {
 	    return this.primarySolrQuery.buildToJson();
+	}
+
+	@Override
+	public void flush() {
+	    this.scaffold = null;
+	    this.primarySolrQuery = null;
+	    this.queryParamHandler = null;
+	    this.secondSolrQuery = null;
 	}
 }

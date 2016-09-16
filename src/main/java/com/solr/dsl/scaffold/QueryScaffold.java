@@ -76,6 +76,13 @@ public class QueryScaffold implements BuilderToString {
 	LOGGER.info("Invoking remove(field), values({})", StringUtils.join(new Object[] { field }, ", "));
 	return fields.remove(field);
     }
+    
+    public boolean removeByName(String name) {
+	LOGGER.info("Invoking removeByName(name), values({})", StringUtils.join(new Object[] { name }, ", "));
+	List<ScaffoldField> results = getMultiByName(name);
+	results.forEach(field -> remove(field));
+	return true;
+    }
 
     public ScaffoldField getByName(String name) {
 	LOGGER.info("Invoking getByName(name), values({})", StringUtils.join(new Object[] { name }, ", "));

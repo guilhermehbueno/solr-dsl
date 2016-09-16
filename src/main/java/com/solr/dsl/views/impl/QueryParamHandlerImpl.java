@@ -44,8 +44,7 @@ public class QueryParamHandlerImpl implements QueryParamHandler {
 
 	@Override
 	public QueryParamHandler remove(String fieldName) {
-		ScaffoldField fieldRecovered = this.scaffold.getByName(fieldName);
-		this.scaffold.remove(fieldRecovered);
+		this.scaffold.removeByName(fieldName);
 		return this;
 	}
 
