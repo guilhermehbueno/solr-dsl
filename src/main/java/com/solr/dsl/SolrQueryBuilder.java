@@ -134,7 +134,12 @@ public class SolrQueryBuilder implements SmartQuery, QueryInfo {
 	}
 
 	public static SmartQuery fromRawQuery(String rawQuery) {
-	    	List<NameValuePair> parsedQuery = SolrQueryRawExtractor.parseQueryString(rawQuery);
+	    	return fromRawQuery(rawQuery, query -> SolrQueryRawExtractor.parseQueryString(query));
+	}
+	
+	public static SmartQuery fromRawQuery(String rawQuery, Function<String, List<NameValuePair>> parser) {
+	    	if(parser == null) throw new IllegalArgumentException("parser cannot be null");
+	    	List<NameValuePair> parsedQuery = parser.apply(rawQuery);
 		String query = SolrQueryRawExtractor.getSingleQueryParamValue("q", parsedQuery);
 		List<ScaffoldField> unacknowledgedQueryParams = SolrQueryRawExtractor.getUnacknowledgedQueryParams(recognizedQueryParams, parsedQuery);
 		SmartQuery SQB = new SolrQueryBuilder(query, unacknowledgedQueryParams);
