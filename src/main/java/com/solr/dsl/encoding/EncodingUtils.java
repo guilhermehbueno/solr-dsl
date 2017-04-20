@@ -34,7 +34,7 @@ public class EncodingUtils {
 	    return content;
 	String decode = content;
 	try {
-	    decode = URLEncoder.encode(content, "UTF-8");
+	    decode = URLEncoder.encode(content, "UTF-8").replace("+", "%20");
 	} catch (UnsupportedEncodingException e) {
 	    LOGGER.error("Error to decode query: {}", decode, e);
 	}
