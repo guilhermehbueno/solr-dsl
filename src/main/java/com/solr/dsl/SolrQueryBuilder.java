@@ -300,6 +300,11 @@ public class SolrQueryBuilder implements SmartQuery, QueryInfo {
 	public String buildToJson() {
 	    return this.scaffold.buildToJson();
 	}
+
+	@Override
+	public String buildEncoded() {
+	    return this.scaffold.buildEncoded();
+	}
     }
 
     @Override
@@ -310,6 +315,11 @@ public class SolrQueryBuilder implements SmartQuery, QueryInfo {
     @Override
     public String buildToJson() {
 	return this.primarySolrQuery.buildToJson();
+    }
+    
+    @Override
+    public String buildEncoded() {
+	return this.scaffold.buildEncoded();
     }
 
     @Override
@@ -324,18 +334,23 @@ public class SolrQueryBuilder implements SmartQuery, QueryInfo {
 	return query -> {
 	    String[] params = query.split("&");
 	    List<NameValuePair> pairs = Arrays.asList(params).stream().map(param -> {
-		try {
-		    param = URLDecoder.decode(param, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-		    LOGGER.error("Problem to decode param: {}", param, e);
-		}
 		String[] val = param.split("=");
 		if (val.length > 1)
-		    return new BasicNameValuePair(val[0], val[1]);
+		    return new BasicNameValuePair(decode(val[0]), decode(val[1]));
 		return new BasicNameValuePair(val[0], null);
 	    }).collect(Collectors.toList());
 	    return pairs;
 	};
+    }
+    
+    private static String decode(String content){
+	String decoded = content;
+	try {
+	    decoded = URLDecoder.decode(content, "UTF-8");
+	} catch (UnsupportedEncodingException e) {
+	    LOGGER.error("Problem to decode param: {}", content, e);
+	}
+	return decoded;
     }
     
     public static java.util.function.Function<String, List<NameValuePair>> queryParserWithoutDecode() {

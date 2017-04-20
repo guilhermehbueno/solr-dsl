@@ -4,6 +4,7 @@ import static com.solr.dsl.scaffold.FieldBuilder.field;
 
 import java.util.List;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.http.NameValuePair;
 
 import com.solr.dsl.scaffold.QueryScaffold;
@@ -111,7 +112,11 @@ public class QueryConfigureCommand implements SecondCommandAggregation, ThirdCom
 
     @Override
     public String buildToJson() {
-	// TODO Auto-generated method stub
-	return null;
+	throw new NotImplementedException("Not implemented.");
+    }
+
+    @Override
+    public String buildEncoded() {
+	return scaffold.buildEncoded();
     }
 }

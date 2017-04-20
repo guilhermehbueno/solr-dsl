@@ -13,15 +13,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
+import com.solr.dsl.encoding.EncodingUtils;
 import com.solr.dsl.views.build.BuilderToString;
 
 /**
  * The most important class
+ * 
  * @author guilhermehbueno
  *
  */
 public class QueryScaffold implements BuilderToString {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(QueryScaffold.class);
 
     private final List<ScaffoldField> fields = new ArrayList<>();
@@ -30,10 +32,9 @@ public class QueryScaffold implements BuilderToString {
 	return this.fields.stream().filter(field -> field.getName().contains("facet")).count() > 0;
     }
 
-    
     public boolean isFacetDisabled() {
 	LOGGER.debug("Invoking isFacetDisabled(), values({})", StringUtils.join(new Object[] {}, ", "));
-	
+
 	ScaffoldField field = getByName("facet");
 	if (field == null || field.getValue() == null)
 	    return false;
@@ -43,23 +44,23 @@ public class QueryScaffold implements BuilderToString {
 
     public boolean hasField(String fieldName) {
 	LOGGER.debug("Invoking hasField(fieldName), values({})", StringUtils.join(new Object[] { fieldName }, ", "));
-	
+
 	return this.fields.stream().filter(field -> field.getName().contains(fieldName)).count() > 0;
     }
-    
+
     public boolean change(String name, String value) {
 	LOGGER.debug("Invoking change(name, value), values({})", StringUtils.join(new Object[] { name, value }, ", "));
-	
+
 	ScaffoldField field = getByName(name);
-	if(field == null){
-	    field =  new ScaffoldField(name, value, name);
+	if (field == null) {
+	    field = new ScaffoldField(name, value, name);
 	    fields.add(field);
-	}else{
+	} else {
 	    field.setValue(value);
 	}
 	return true;
     }
-    
+
     public boolean change(ScaffoldField field) {
 	LOGGER.debug("Invoking change(field), values({})", StringUtils.join(new Object[] { field }, ", "));
 	return change(field.getName(), field.getValue());
@@ -67,16 +68,15 @@ public class QueryScaffold implements BuilderToString {
 
     public boolean add(ScaffoldField field) {
 	LOGGER.debug("Invoking add(field), values({})", StringUtils.join(new Object[] { field }, ", "));
-	
+
 	return fields.add(field);
     }
-
 
     public boolean remove(ScaffoldField field) {
 	LOGGER.debug("Invoking remove(field), values({})", StringUtils.join(new Object[] { field }, ", "));
 	return fields.remove(field);
     }
-    
+
     public boolean removeByName(String name) {
 	LOGGER.debug("Invoking removeByName(name), values({})", StringUtils.join(new Object[] { name }, ", "));
 	List<ScaffoldField> results = getMultiByName(name);
@@ -86,7 +86,7 @@ public class QueryScaffold implements BuilderToString {
 
     public ScaffoldField getByName(String name) {
 	LOGGER.debug("Invoking getByName(name), values({})", StringUtils.join(new Object[] { name }, ", "));
-	
+
 	ScaffoldField result = null;
 	for (ScaffoldField field : this.fields) {
 	    if (field.getName().equalsIgnoreCase(name)) {
@@ -123,7 +123,7 @@ public class QueryScaffold implements BuilderToString {
 	if (hasAnyFacet() && !isFacetDisabled() && !hasField("facet")) {
 	    params.add("facet=true");
 	}
-	
+
 	String query = StringUtils.join(params, "&");
 	LOGGER.debug("Query: {}", query);
 	return query;
@@ -156,28 +156,43 @@ public class QueryScaffold implements BuilderToString {
     @Override
     public String buildToJson() {
 	LOGGER.debug("Invoking buildToJson(), values({})", StringUtils.join(new Object[] {}, ", "));
-	
-	Map<String, List<ScaffoldField>> groupedFields = fields .stream().collect(Collectors.groupingBy(field -> field.getName()));
+
+	Map<String, List<ScaffoldField>> groupedFields = fields.stream().collect(Collectors.groupingBy(field -> field.getName()));
 	Map<String, Object> params = new HashMap<>();
-	
-	
+
 	LOGGER.debug("Grouped fields: {}", groupedFields.keySet());
-	
+
 	groupedFields.forEach((key, value) -> {
 	    List<String> values = value.stream().map(field -> field.getValue()).collect(Collectors.toList());
-	    if(values.size()==1){
+	    if (values.size() == 1) {
 		params.put(key, values.get(0));
-	    }else{
+	    } else {
 		params.put(key, values);
 	    }
-	    
 	});
-	
+
 	Map<String, Object> paramsWrapper = new HashMap<>();
 	paramsWrapper.put("params", params);
 
 	Gson gson = new Gson();
 	String result = gson.toJson(paramsWrapper, HashMap.class);
 	return result;
+    }
+
+   
+
+    @Override
+    public String buildEncoded() {
+	LOGGER.debug("Invoking buildEncoded(), values({})", StringUtils.join(new Object[] {}, ", "));
+	List<String> params = fields.stream().map(field -> {
+	    return field.getName() + "=" + EncodingUtils.encode(field.getValue());
+	}).collect(Collectors.toList());
+	if (hasAnyFacet() && !isFacetDisabled() && !hasField("facet")) {
+	    params.add("facet=true");
+	}
+
+	String query = StringUtils.join(params, "&");
+	LOGGER.debug("Query: {}", query);
+	return query;
     }
 }

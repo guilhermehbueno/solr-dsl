@@ -3,6 +3,8 @@ package com.solr.dsl;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.NotImplementedException;
+
 import com.solr.dsl.scaffold.QueryScaffold;
 import com.solr.dsl.scaffold.ScaffoldField;
 import com.solr.dsl.views.ThirdCommandAggregation;
@@ -95,7 +97,11 @@ class  SecondSolrQuery implements BuilderToString {
 
     @Override
     public String buildToJson() {
-	// TODO Auto-generated method stub
-	return null;
+	throw new NotImplementedException("Not implemented.");
+    }
+
+    @Override
+    public String buildEncoded() {
+	return scaffold.buildEncoded();
     }
 }

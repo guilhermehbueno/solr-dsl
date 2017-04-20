@@ -4,6 +4,7 @@ import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import com.solr.dsl.encoding.EncodingUtils;
 import com.solr.dsl.views.SmartQuery;
 
 public class SolrQueryBuilderTest {
@@ -41,7 +42,8 @@ public class SolrQueryBuilderTest {
 								.facetByQuery("teste")
 								.build())},
 			{new QueryBean("q=*:*&fq=Marca_ClassMaster_string:Black\\ \\&\\ Decker", SolrQueryBuilder.fromRawQuery("q=*%3A*&fq=Marca_ClassMaster_string%3ABlack%5C+%5C%26%5C+Decker", SolrQueryBuilder.defaultQueryParser()).build())},
-			{new QueryBean("q=*:*&fq=Marca_ClassMaster_string:Black & Decker", SolrQueryBuilder.fromRawQuery("q=*%3A*&fq=Marca_ClassMaster_string%3ABlack+%26+Decker", SolrQueryBuilder.defaultQueryParser()).build())}
+			{new QueryBean("q=*:*&fq=Marca_ClassMaster_string:Black & Decker", SolrQueryBuilder.fromRawQuery("q=*%3A*&fq=Marca_ClassMaster_string%3ABlack+%26+Decker").build())},
+			{new QueryBean("q=*:*&fq={!ex=cor}Marca_ClassMaster_string:Black & Decker", SolrQueryBuilder.fromRawQuery("q=*%3A*&fq=%7B%21ex%3Dcor%7DMarca_ClassMaster_string%3ABlack+%26+Decker").build())}
 		};
 	}
 	
@@ -50,6 +52,16 @@ public class SolrQueryBuilderTest {
 		Assert.assertNotNull(bean.getExpectedQuery());
 		Assert.assertNotNull(bean.getGeneratedQuery());
 		Assert.assertEquals(bean.getGeneratedQuery(), bean.getExpectedQuery());
+	}
+	
+	@Test
+	public void shouldBuildEncodedQuery(){
+	    String rawQuery = "q="+EncodingUtils.encode("black & decker");
+	    SmartQuery smart = SolrQueryBuilder.fromRawQuery(rawQuery);
+	    String build = smart.build();
+	    String buildEncoded = smart.buildEncoded();
+	    Assert.assertNotEquals(build, buildEncoded);
+	    Assert.assertEquals(rawQuery, buildEncoded);
 	}
 	
 	@Test
