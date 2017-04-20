@@ -12,7 +12,8 @@ public class EncodingUtilsTest {
 	    {"((name_text_pt:Black~))", "%28%28name_text_pt%3ABlack%7E%29%29"},
 	    {"Marca_ClassMaster_string name_text_pt^1 name_text_pt_s firstName^1 firstName_s code_string", "Marca_ClassMaster_string%20name_text_pt%5E1%20name_text_pt_s%20firstName%5E1%20firstName_s%20code_string"},
 	    {" ","%20"},
-	    {"+","%2B"}
+	    {"+","%2B"},
+	    {"black & decker", "black%20%26%20decker"}
 	};
     }
     
