@@ -13,11 +13,11 @@ public class EncodingUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EncodingUtils.class);
 
-    public List<String> decode(List<String> values) {
+    public static List<String> decode(List<String> values) {
 	return values.stream().map(val -> decode(val)).collect(Collectors.toList());
     }
 
-    public String decode(String content) {
+    public static String decode(String content) {
 	if (content == null)
 	    return content;
 	String decode = content;

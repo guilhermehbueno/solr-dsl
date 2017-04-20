@@ -10,6 +10,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import com.google.gson.Gson;
+import com.solr.dsl.raw.parser.QueryStringParser;
 import com.solr.dsl.scaffold.ScaffoldField;
 import com.solr.dsl.views.SmartQuery;
 
@@ -41,7 +42,7 @@ public class SmartQueryTest {
     @Test
     public void shouldPreserveFacetFieldsFromRawQuery() {
 	String query = "q=iphone&unack=true&guilherme=bueno&mm=100%25&fq=name:teste&facet.field=1&facet=true&facet.field=2";
-	SmartQuery smartQuery = SolrQueryBuilder.fromRawQuery(query, SolrQueryBuilder.defaultQueryParser());
+	SmartQuery smartQuery = SolrQueryBuilder.fromRawQuery(query, QueryStringParser.defaultQueryParser());
 	System.out.println(smartQuery.build());
 	Assert.assertEquals("q=iphone&unack=true&guilherme=bueno&mm=100%&fq=name:teste&facet.field=1&facet=true&facet.field=2", smartQuery.build());
 	System.out.println(smartQuery.buildToJson());

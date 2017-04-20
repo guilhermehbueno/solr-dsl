@@ -2,8 +2,6 @@ package com.solr.dsl;
 
 import static com.solr.dsl.scaffold.FieldBuilder.field;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -12,13 +10,13 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.solr.dsl.raw.SolrQueryRawExtractor;
+import com.solr.dsl.raw.parser.QueryStringParser;
 import com.solr.dsl.scaffold.QueryScaffold;
 import com.solr.dsl.scaffold.ScaffoldField;
 import com.solr.dsl.views.QueryParamHandler;
@@ -139,9 +137,7 @@ public class SolrQueryBuilder implements SmartQuery, QueryInfo {
     }
 
     public static SmartQuery fromRawQuery(String rawQuery) {
-	// return fromRawQuery(rawQuery, query ->
-	// SolrQueryRawExtractor.parseQueryString(query));
-	return fromRawQuery(rawQuery, defaultQueryParser());
+	return fromRawQuery(rawQuery, QueryStringParser.defaultQueryParser());
     }
 
     public static SmartQuery fromRawQuery(String rawQuery, java.util.function.Function<String, List<NameValuePair>> parser) {
@@ -328,41 +324,5 @@ public class SolrQueryBuilder implements SmartQuery, QueryInfo {
      * Será removido em breve.
      */
     public void flush() {
-    }
-
-    public static java.util.function.Function<String, List<NameValuePair>> defaultQueryParser() {
-	return query -> {
-	    String[] params = query.split("&");
-	    List<NameValuePair> pairs = Arrays.asList(params).stream().map(param -> {
-		String[] val = param.split("=");
-		if (val.length > 1)
-		    return new BasicNameValuePair(decode(val[0]), decode(val[1]));
-		return new BasicNameValuePair(val[0], null);
-	    }).collect(Collectors.toList());
-	    return pairs;
-	};
-    }
-    
-    private static String decode(String content){
-	String decoded = content;
-	try {
-	    decoded = URLDecoder.decode(content, "UTF-8");
-	} catch (UnsupportedEncodingException e) {
-	    LOGGER.error("Problem to decode param: {}", content, e);
-	}
-	return decoded;
-    }
-    
-    public static java.util.function.Function<String, List<NameValuePair>> queryParserWithoutDecode() {
-	return query -> {
-	    String[] params = query.split("&");
-	    List<NameValuePair> pairs = Arrays.asList(params).stream().map(param -> {
-		String[] val = param.split("=");
-		if (val.length > 1)
-		    return new BasicNameValuePair(val[0], val[1]);
-		return new BasicNameValuePair(val[0], null);
-	    }).collect(Collectors.toList());
-	    return pairs;
-	};
     }
 }

@@ -35,4 +35,14 @@ public class SolrHugeQueryParserTest {
 	System.out.println(smartQuery.info().getQuery());
 	System.out.println(smartQuery.buildToJson());
     }
+    
+    
+    
+    @Test
+    public void shouldParseHugeQueryEncoded() throws Exception{
+	String content = Files.toString(new File("src/test/resources/encoded-huge-query-pre-prod.txt"), Charset.defaultCharset());
+	Assert.assertNotNull(content);
+	SmartQuery smartQuery = SolrQueryBuilder.fromRawQuery(content);
+	System.out.println("Encoded: " + smartQuery.buildEncoded());
+    }
 }

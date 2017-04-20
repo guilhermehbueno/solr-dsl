@@ -20,6 +20,7 @@ public class SolrQueryRawExtractor {
 		return getMultiQueryParamValue("fq", pairs);
 	}
 	
+	@Deprecated
 	public static List<NameValuePair> parseQueryString(String queryString) {
 	    List<NameValuePair> parse = URLEncodedUtils.parse(queryString, Charset.defaultCharset());
 	    return parse;
