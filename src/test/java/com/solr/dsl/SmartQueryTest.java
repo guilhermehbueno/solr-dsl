@@ -40,10 +40,10 @@ public class SmartQueryTest {
 
     @Test
     public void shouldPreserveFacetFieldsFromRawQuery() {
-	String query = "q=iphone&unack=true&guilherme=bueno&mm=100%&fq=name:teste&facet.field=1&facet=true&facet.field=2";
-	SmartQuery smartQuery = SolrQueryBuilder.fromRawQuery(query);
+	String query = "q=iphone&unack=true&guilherme=bueno&mm=100%25&fq=name:teste&facet.field=1&facet=true&facet.field=2";
+	SmartQuery smartQuery = SolrQueryBuilder.fromRawQuery(query, SolrQueryBuilder.defaultQueryParser());
 	System.out.println(smartQuery.build());
-	Assert.assertEquals(query, smartQuery.build());
+	Assert.assertEquals("q=iphone&unack=true&guilherme=bueno&mm=100%&fq=name:teste&facet.field=1&facet=true&facet.field=2", smartQuery.build());
 	System.out.println(smartQuery.buildToJson());
     }
 

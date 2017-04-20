@@ -39,7 +39,9 @@ public class SolrQueryBuilderTest {
 								.listBy("id,name").and()
 								.facetByField("category")
 								.facetByQuery("teste")
-								.build())}
+								.build())},
+			{new QueryBean("q=*:*&fq=Marca_ClassMaster_string:Black\\ \\&\\ Decker", SolrQueryBuilder.fromRawQuery("q=*%3A*&fq=Marca_ClassMaster_string%3ABlack%5C+%5C%26%5C+Decker", SolrQueryBuilder.defaultQueryParser()).build())},
+			{new QueryBean("q=*:*&fq=Marca_ClassMaster_string:Black & Decker", SolrQueryBuilder.fromRawQuery("q=*%3A*&fq=Marca_ClassMaster_string%3ABlack+%26+Decker", SolrQueryBuilder.defaultQueryParser()).build())}
 		};
 	}
 	
