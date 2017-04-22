@@ -16,15 +16,15 @@
 
 	<distributionManagement>
 		<snapshotRepository>
-			<id>artifactory</id>
-			<name>dfa10b2745f2-snapshots</name>
-			<url>http://qa.artifactory.marketplaceintegrator.com:8080/artifactory/libs-snapshot-local</url>
+				<id>artifactory</id>
+				<name>2a44cc1f13d6-snapshots</name>
+      	<url>http://qa.artifactory.marketplaceintegrator.com:8080/artifactory/libs-snapshot-local</url>
 		</snapshotRepository>
 		<repository>
-			<id>artifactory</id>
-			<name>dfa10b2745f2-releases</name>
-			<url>http://qa.artifactory.marketplaceintegrator.com:8080/artifactory/libs-release-local</url>
-		</repository>
+        <id>artifactory</id>
+        <name>2a44cc1f13d6-releases</name>
+        <url>http://qa.artifactory.marketplaceintegrator.com:8080/artifactory/libs-release-local</url>
+    </repository>
 	</distributionManagement>
 
 	<dependencies>
