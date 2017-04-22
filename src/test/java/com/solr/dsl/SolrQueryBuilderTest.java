@@ -4,7 +4,6 @@ import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import com.solr.dsl.encoding.EncodingUtils;
 import com.solr.dsl.raw.parser.QueryStringParser;
 import com.solr.dsl.views.SmartQuery;
 
@@ -57,7 +56,8 @@ public class SolrQueryBuilderTest {
 	
 	@Test
 	public void shouldBuildEncodedQuery(){
-	    String rawQuery = "q="+EncodingUtils.encode("black & decker");
+	    //String rawQuery = "q="+EncodingUtils.encode("black & decker");
+	    String rawQuery = "q=black%20%26%20decker";
 	    SmartQuery smart = SolrQueryBuilder.fromRawQuery(rawQuery);
 	    String build = smart.build();
 	    String buildEncoded = smart.buildEncoded();
