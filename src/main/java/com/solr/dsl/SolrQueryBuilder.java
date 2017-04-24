@@ -109,6 +109,11 @@ public class SolrQueryBuilder implements SmartQuery, QueryInfo {
     public String getFieldList() {
 	return this.scaffold.getByName("fl").toString();
     }
+    
+    @Override
+    public List<ScaffoldField> getFieldsStructure() {
+	return scaffold.getFields();
+    }
 
     @Override
     public List<String> getFilterQueries() {

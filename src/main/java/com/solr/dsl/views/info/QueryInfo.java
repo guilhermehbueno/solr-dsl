@@ -13,5 +13,6 @@ public interface QueryInfo {
 	public String getFacetQueries();
 	public List<String> getFacetFields();
 	public List<ScaffoldField> getFacetFieldsStructure();
+	public List<ScaffoldField> getFieldsStructure();
 	public String getFacetPrefixes();
 }
